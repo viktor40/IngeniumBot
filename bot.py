@@ -123,4 +123,7 @@ async def scoreboard(ctx, arg, arg2=''):
     await ctx.send(result)
 
 
+@bot.command(name='plyerscore', help='display a single score for a player')
+async def playerscore(ctx, )
+
 bot.run(token)

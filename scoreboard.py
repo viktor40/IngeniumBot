@@ -136,5 +136,3 @@ def player():
     pass
 
 
-def single():
-    pass
