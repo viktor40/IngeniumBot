@@ -21,7 +21,10 @@ def get_single_scpore(objective, player):
     if player not in white_players:  # check if player is whitelisted
         return
     for i in root:
+        # print(i)
         if i['Objective'] == objective:  # filter on a certain objective
             name = i['Name']
             if name == player:  # check if player is whitelisted
                 return name  # add list containing name & score to scoreboard
+
+# print(get_single_scpore('minecraft:play_one_minute', 'Viktor40'))
