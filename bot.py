@@ -116,14 +116,11 @@ async def status(ctx):
 
 
 # scoreboard command
-scoreboard_help = f'print the scoreboard you want to get to the chat. ' \
-                  f'The scoreboards are: ' \
-                  f'slime_peri, pick_uses, hoe_uses, axe_uses, shovel_uses, play_minutes, mobs_killed'
-
-
+scoreboard_help = f'print the scoreboard you want to get to the chat. '
 @bot.command(name='scoreboard', help=scoreboard_help)
 async def scoreboard(ctx, arg, arg2=''):
     result = sc.display(arg, arg2)  # get result from the scoreboard display function
     await ctx.send(result)
+
 
 bot.run(token)

@@ -56,6 +56,7 @@ def from_file(file):
         dicty[regel[0]] = regel[1]
     return dicty
 
+
 def players(whitelist, save=False):
     with open(whitelist) as f:
         data = json.load(f)
