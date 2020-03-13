@@ -16,6 +16,7 @@ def generate(whitelist, save=False):
     np.savetxt('players.txt', X=array, fmt='%s') if save else None
     return player_info
 
+
 # access the mojang api to convert missing uuid's to player names
 def make_playername(UUID_file, save=False):
     link = 'https://sessionserver.mojang.com/session/minecraft/profile/{}'
