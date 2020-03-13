@@ -103,23 +103,19 @@ def display(sc, n):
     # go through the dictionary and get the uuid and playername
     if datatype == 'JSON':
         # get the dictionary containing the uuid and playernames
-
         mapped_uuid = player_data.generate(save=False)
 
         for id, playername in mapped_uuid.items():
             try:
                 data = get_json_stat(directory, sub_type, objective, sc, id)
-
                 if int(data) > 0:
                     # add to the list containing the playername and score
                     stat.append((playername, data))
 
             except FileNotFoundError:  # if the file is not found, do nothing
                 pass
-
             except KeyError:  # if the player does not have a statistic for the objective
                 pass
-
             except TypeError:  # if the player has value None for the objective
                 pass
 
@@ -131,7 +127,6 @@ def display(sc, n):
                 return
             else:
                 stat.append(tuple(i))
-
     else:  # return nothing if the command is unknown
         return
 
@@ -157,7 +152,6 @@ def player(sc, ign):
     # fetch the info about the objective required to get
     objective, sub_type, datatype = check_type(sc)
     directory = 'stats'
-
     players = player_data.generate()
 
     for uuid, name in players.items():
@@ -171,10 +165,8 @@ def player(sc, ign):
 
         except FileNotFoundError:  # if the file is not found, do nothing
             pass
-
         except KeyError:  # if the player does not have a statistic for the objective
             pass
-
         except TypeError:  # if the player has value None for the objective
             pass
 

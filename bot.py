@@ -118,16 +118,21 @@ async def status(ctx):
 # scoreboard command
 scoreboard_help = f'print the scoreboard you want to get to the chat. '
 @bot.command(name='scoreboard', help=scoreboard_help)
-async def scoreboard(ctx, arg, arg2=''):
-    result = sc.display(arg, arg2)  # get result from the scoreboard display function
+async def scoreboard(ctx, objective, number=''):
+    result = sc.display(objective, number)  # get result from the scoreboard display function
     await ctx.send(result)
 
 
 # command to fetch scoreboard data of a single player and a single scoreboard
 @bot.command(name='playerscore', help='display a single score for a player')
-async def playerscore(ctx, arg, arg2):
-    result = sc.player(arg, arg2)
+async def playerscore(ctx, objective, player):
+    result = sc.player(objective, player)
     print(result)
     await ctx.send(result)
+
+
+@bot.command(name='link_names', help='link minecraft ign to discord screen name')
+async def link_name(ctx, arg):
+    await ctx.send()
 
 bot.run(token)

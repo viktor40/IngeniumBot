@@ -68,3 +68,5 @@ def players(save=False):
     return player
 
 
+def link_dc_ign():
+    return
