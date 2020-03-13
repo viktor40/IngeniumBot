@@ -71,9 +71,13 @@ async def on_message(message):  # run when a message has been send
         await message.channel.send(response)
 
     # respond to happy birthday
-    if message.content.find('happy birthday') != -1 or message.content.find('Happy Birthday') != -1:
+    if 'happy birthday' in message.content or 'Happy Birthday' in message.content:
         response = 'Ingenium wishes you a happy birthday! 🎈🎉'
         await message.channel.send(response)
+
+    if 'ilmango' in message.content:
+        response = 'Mango, Mango, Mango mango mango, Mangooooooooooooooooooooooooooooooooooooooooooo'
+        await message.channel.send(response, delete_after=20)
 
     await bot.process_commands(message)
 
