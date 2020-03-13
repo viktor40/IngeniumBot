@@ -83,6 +83,7 @@ def get_json_stat(directory, sub_type, objective, sc, id):
         data = math.floor((int(data) / (20 * 60)))
     elif sc == 'time_since_death_hours':
         data = math.floor(int(data) / (20 * 3600))
+    f.close()
     return data
 
 

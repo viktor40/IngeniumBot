@@ -16,6 +16,7 @@ def generate(save=False):
     player_info = {player['uuid']: player['name'] for player in data}
     array = np.array(list(player_info.items()))
     np.savetxt('players.txt', X=array, fmt='%s') if save else None
+    f.close()
     return player_info
 
 
@@ -47,6 +48,7 @@ def make_playername(UUID_file, save=False):
 
     array = np.array(list(dict_igns.items()))
     np.savetxt('players.txt', X=array, fmt='%s') if save else None
+    f.close()
     return dict_igns
 
 
@@ -62,6 +64,7 @@ def players(save=False):
 
     player = [player['name'] for player in data]
     np.savetxt('players_only.txt', X=player, fmt='%s') if save else None
+    f.close()
     return player
 
 
