@@ -127,7 +127,10 @@ def display(sc, n):
     elif datatype == 'NBT':
         data = nbt.get_score(objective)
         for i in data:
-            stat.append(tuple(i))
+            if i[1] == 0:
+                return
+            else:
+                stat.append(tuple(i))
 
     else:  # return nothing if the command is unknown
         return
