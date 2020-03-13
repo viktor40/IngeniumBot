@@ -50,7 +50,7 @@ objectives_km = ['distance_flown_km', 'distance_walked_km']
 def check_type(objective):
     # get the correct id of the objective
     if objective in JSON_objectives:
-        """if the scoreboard is a built in one, use open the .JSON file containting it"""
+        """if the scoreboard is a built in one, convert input to correct scoreboard name"""
         data = JSON_objectives[objective]
         datatype = 'JSON'
         objective, sub_type = data[0], data[1]
@@ -96,13 +96,14 @@ def display(sc, n):
     objective, sub_type, datatype = check_type(sc)
 
     # set the directory of the stat files
-    directory = 'stats'
+    directory = '../mscs/worlds/survival/survival/stats'
     stat = []
 
     # go through the dictionary and get the uuid and playername
     if datatype == 'JSON':
         # get the dictionary containing the uuid and playernames
-        mapped_uuid = player_data.from_file('players.txt')
+
+        mapped_uuid = player_data.generate(save=False)
 
         for id, playername in mapped_uuid.items():
             try:
@@ -153,7 +154,7 @@ def player(sc, ign):
     objective, sub_type, datatype = check_type(sc)
     directory = 'stats'
 
-    players = player_data.generate('whitelist.json')
+    players = player_data.generate()
 
     for uuid, name in players.items():
         if ign == name:

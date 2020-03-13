@@ -5,9 +5,11 @@ import re
 import numpy as np
 import time
 
+whitelist = '../mscs/worlds/survival/whitelist.json'
+
 
 # generate a dictionary mapping the uuid's to the playernames
-def generate(whitelist, save=False):
+def generate(save=False):
     with open(whitelist) as f:
         data = json.load(f)
 
@@ -48,17 +50,13 @@ def make_playername(UUID_file, save=False):
     return dict_igns
 
 
-# convert the file to a dictionarry
+# convert the file with 2 columns of data to a dictionarry
 def from_file(file):
-    a = np.loadtxt(file, dtype='str')
-    dicty = {}
-
-    for regel in a:
-        dicty[regel[0]] = regel[1]
-    return dicty
+    data = np.loadtxt(file, dtype='str')
+    return {row[0]: row[1] for row in data}
 
 
-def players(whitelist, save=False):
+def players(save=False):
     with open(whitelist) as f:
         data = json.load(f)
 

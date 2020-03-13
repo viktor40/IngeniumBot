@@ -2,9 +2,11 @@ import nbtlib  # import module for nbt database handling
 import time  # inport time module for performance testing
 import player_data  # import uuid_converter.py
 
+scoreboard_path = '../mscs/worlds/survival/survival/data/scoreboard.dat'
+
 
 def get_score(objective):
-    nbt_file = nbtlib.load('scoreboard.dat')  # load the nbt data
+    nbt_file = nbtlib.load(scoreboard_path)  # load the nbt data
     root = nbt_file.root['data']['PlayerScores']  # get to the correct branch: data -> playerscores
     scoreboard = []  # create empty list to store data
 
@@ -16,7 +18,7 @@ def get_score(objective):
 
 
 def get_single_scpore(objective, player):
-    nbt_file = nbtlib.load('scoreboard.dat')  # load the nbt data
+    nbt_file = nbtlib.load(scoreboard_path)  # load the nbt data
     root = nbt_file.root['data']['PlayerScores']  # get to the correct branch: data -> playerscores
     white_players = player_data.players('whitelist.json')  # load a list of all whitelisted playes from uuid
     if player not in white_players:  # check if player is whitelisted, if not break the operation
