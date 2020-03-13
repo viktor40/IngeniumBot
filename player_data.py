@@ -68,5 +68,17 @@ def players(save=False):
     return player
 
 
-def link_dc_ign():
-    return
+def link_dc_ign(mc_name, dc_name):
+    datafile = 'dc_to_ign.txt'  # specify the output datafile
+    # load the datafile adn ignor #xxxx after discord name by setting comment character in file to %
+    file_content = np.loadtxt(datafile, dtype='str', comments='%')
+    # check if the user didn't already linked the mc username with his discord name
+    for member in file_content:
+        if member[0] == str(dc_name):  # return if author already linked the names
+            return
+    # append the names to the ndarray along the 0th axis
+    file_content = np.append(file_content, [[dc_name, mc_name]], axis=0)
+    np.savetxt(datafile, X=file_content, fmt='%s')  # write the new array to the file
+
+
+link_dc_ign('Viktor40', 'Viktorvn40#7694')

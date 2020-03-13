@@ -2,6 +2,7 @@ import os  # import module for directory management
 from dotenv import load_dotenv  # load module for usage of a .env file
 import subprocess  # import module used to do linux code execution
 from discord.ext import commands  # import  command module from discord.py
+import player_data as pd
 import discord  # import discord.py module
 import scoreboard as sc  # import scoreboard.py
 
@@ -127,12 +128,33 @@ async def scoreboard(ctx, objective, number=''):
 @bot.command(name='playerscore', help='display a single score for a player')
 async def playerscore(ctx, objective, player):
     result = sc.player(objective, player)
-    print(result)
     await ctx.send(result)
 
 
-@bot.command(name='link_names', help='link minecraft ign to discord screen name')
-async def link_name(ctx, arg):
-    await ctx.send()
+# link the minecraft ign to the discord name
+# pass_context makes sure we can read info like message sender and more
+@bot.command(name='link_name', help='link minecraft ign to discord screen name', pass_context=True)
+async def link_name(ctx, mc_name):
+    dc_name = ctx.author  # the discord name is the name of the author of the message
+    pd.link_dc_ign(mc_name, dc_name)
+    """print the result and format it"""
+    result = f'```\n' \
+             f'discord name: {dc_name}\n' \
+             f'minecraft ign: {mc_name}\n' \
+             f'```'
+    await ctx.send(result)
+
+
+@bot.command(name='get_mcname', help='show ign by discord name', pass_context=True)
+async def get_mcname(ctx, mc_name):
+    result = 'This command doesn\'t work yet'
+    await ctx.send(result)
+
+
+@bot.command(name='get_dcname', help='show ign by discord name', pass_context=True)
+async def get_dcname(ctx, dc_name):
+    result = 'This command doesn\'t work yet'
+    await ctx.send(result)
+
 
 bot.run(token)
