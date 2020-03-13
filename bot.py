@@ -7,6 +7,7 @@ import player_data as pd
 import discord  # import discord.py module
 import scoreboard as sc  # import scoreboard.py
 import chat_link as cl
+from filetail import FileTail
 
 bot = commands.Bot(command_prefix=('ig ', 'Ig '))  # set the command prefix
 
@@ -19,11 +20,17 @@ DEFENSE_MESSAGE = True  # if true, bot won't  speak to itself
 ugly = ['JeSuisLelijk', 'jesuislelijk']
 
 
+# runs the channel for mc chat link
 # print a message when the bot starts
 # async will make sure the different functions can run simultaneously
 @bot.event  # checks for bot events
 async def on_ready():  # run when bot is ready
     print('Bot connected!')
+    send_channel = bot.get_channel(688125129456484366)
+    tail = FileTail("../mscs/worlds/survival/console.out")
+    for line in tail:
+        if '[Server thread/INFO]' and '<' and '>' in line:
+            await send_channel.send(line[33:])
 
 
 # check messages when they're send and answer if something triggers the bot
@@ -106,13 +113,6 @@ async def on_member_join(member):
                 f'We hope you will have a pleasant time on the server!')
     await welcome.send(response)
 
-# runs the channel for mc chat link
-@tasks.loop(seconds=10)
-async def mcChatLoop():
-    send_channel = bot.get_channel(CHAT_LINK_CHANNEL)
-    in_game_message = cl.mc_to_dc()
-    await send_channel.send(in_game_message)
-
 
 # set different commands the bot will respond to
 # name sets the commands name, help will trigger at ig help
@@ -169,6 +169,5 @@ async def get_mcname(ctx, mc_name):
 async def get_dcname(ctx, dc_name):
     result = 'This command doesn\'t work yet'
     await ctx.send(result)
-
 
 bot.run(token)

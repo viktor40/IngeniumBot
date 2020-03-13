@@ -79,6 +79,3 @@ def link_dc_ign(mc_name, dc_name):
     # append the names to the ndarray along the 0th axis
     file_content = np.append(file_content, [[dc_name, mc_name]], axis=0)
     np.savetxt(datafile, X=file_content, fmt='%s')  # write the new array to the file
-
-
-link_dc_ign('Viktor40', 'Viktorvn40#7694')
