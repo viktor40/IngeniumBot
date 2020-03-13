@@ -1,15 +1,18 @@
 import os  # import module for directory management
 from dotenv import load_dotenv  # load module for usage of a .env file
 import subprocess  # import module used to do linux code execution
-from discord.ext import commands  # import  command module from discord.py
+from discord.ext import commands
+from discord.ext import tasks # import  command module from discord.py
 import player_data as pd
 import discord  # import discord.py module
 import scoreboard as sc  # import scoreboard.py
+import chat_link as cl
 
 bot = commands.Bot(command_prefix=('ig ', 'Ig '))  # set the command prefix
 
 load_dotenv()  # load the .env file containing id's that have to be kept secret for security
 token = os.getenv('DISCORD_TOKEN')  # get our discord bot token from .env
+CHAT_LINK_CHANNEL = os.getenv('CHAT_LINK_CHANNEL')
 
 DEFENSE_MESSAGE = True  # if true, bot won't  speak to itself
 
@@ -103,8 +106,15 @@ async def on_member_join(member):
                 f'We hope you will have a pleasant time on the server!')
     await welcome.send(response)
 
+# runs the channel for mc chat link
+@tasks.loop(seconds=10)
+async def mcChatLoop():
+    send_channel = bot.get_channel(CHAT_LINK_CHANNEL)
+    in_game_message = cl.mc_to_dc()
+    await send_channel.send(in_game_message)
 
-# set defferent commands the bot will respond to
+
+# set different commands the bot will respond to
 # name sets the commands name, help will trigger at ig help
 @bot.command(name='test', help='test if the bot is working')
 async def test_bot(ctx):
