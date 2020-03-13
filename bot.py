@@ -2,12 +2,13 @@ import os  # import module for directory management
 from dotenv import load_dotenv  # load module for usage of a .env file
 import subprocess  # import module used to do linux code execution
 from discord.ext import commands
-from discord.ext import tasks # import  command module from discord.py
+from discord.ext import tasks  # import  command module from discord.py
 import player_data as pd
 import discord  # import discord.py module
 import scoreboard as sc  # import scoreboard.py
 import chat_link as cl
 from filetail import FileTail
+import asyncio
 
 bot = commands.Bot(command_prefix=('ig ', 'Ig '))  # set the command prefix
 
@@ -23,14 +24,19 @@ ugly = ['JeSuisLelijk', 'jesuislelijk']
 # runs the channel for mc chat link
 # print a message when the bot starts
 # async will make sure the different functions can run simultaneously
-@bot.event  # checks for bot events
-async def on_ready():  # run when bot is ready
-    print('Bot connected!')
+async def chat_link():
+    await bot.wait_until_ready()
     send_channel = bot.get_channel(688125129456484366)
     tail = FileTail("../mscs/worlds/survival/console.out")
     for line in tail:
         if '[Server thread/INFO]' and '<' and '>' in line:
             await send_channel.send(line[33:])
+            await asyncio.sleep(1)
+
+
+@bot.event
+async def on_ready():
+    print('Bot connected!')
 
 
 # check messages when they're send and answer if something triggers the bot
@@ -170,4 +176,5 @@ async def get_dcname(ctx, dc_name):
     result = 'This command doesn\'t work yet'
     await ctx.send(result)
 
+bot.loop.create_task(chat_link())
 bot.run(token)
