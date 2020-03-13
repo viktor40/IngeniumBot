@@ -65,3 +65,4 @@ def players(whitelist, save=False):
     np.savetxt('players_only.txt', X=player, fmt='%s') if save else None
     return player
 
+

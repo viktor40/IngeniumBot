@@ -123,9 +123,11 @@ async def scoreboard(ctx, arg, arg2=''):
     await ctx.send(result)
 
 
-@bot.command(name='plyerscore', help='display a single score for a player')
+# command to fetch scoreboard data of a single player and a single scoreboard
+@bot.command(name='playerscore', help='display a single score for a player')
 async def playerscore(ctx, arg, arg2):
-    result = 0
+    result = sc.player(arg, arg2)
+    print(result)
     await ctx.send(result)
 
 bot.run(token)

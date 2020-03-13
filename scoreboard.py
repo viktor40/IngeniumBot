@@ -148,23 +148,21 @@ def display(sc, n):
     return output  # return if all players have been iterated over
 
 
-def player(sc, player):
+def player(sc, ign):
     # fetch the info about the objective required to get
     objective, sub_type, datatype = check_type(sc)
     directory = 'stats'
 
     players = player_data.generate('whitelist.json')
 
-    for uuid, ign in players.items():  # for name, age in dictionary.iteritems():  (for Python 2.x)
-        if ign == player:
+    for uuid, name in players.items():
+        if ign == name:
             id = uuid
-            break
 
     if datatype == 'JSON':
         try:
             data = get_json_stat(directory, sub_type, objective, sc, id)
-            print(data)
-            return data
+            return f'```{ign}: {sc} = {data}```'
 
         except FileNotFoundError:  # if the file is not found, do nothing
             pass
@@ -177,11 +175,8 @@ def player(sc, player):
 
     # if it's a custom command load the values from the NBT data by use of the NBT module
     elif datatype == 'NBT':
-        data = nbt.get_single_scpore(objective, player)
-        return data
+        data = nbt.get_single_scpore(objective, ign)
+        return f'```{ign}: {sc} = {data}```'
 
     else:  # return nothing if the command is unknown
         return
-
-
-print(player('play_minutes', 'Viktor40'))
