@@ -7,6 +7,7 @@ import player_data as pd
 import discord  # import discord.py module
 import scoreboard as sc  # import scoreboard.py
 import chat_link as cl
+import functools
 from filetail import FileTail
 import asyncio
 
@@ -14,24 +15,11 @@ bot = commands.Bot(command_prefix=('ig ', 'Ig '))  # set the command prefix
 
 load_dotenv()  # load the .env file containing id's that have to be kept secret for security
 token = os.getenv('DISCORD_TOKEN')  # get our discord bot token from .env
-CHAT_LINK_CHANNEL = os.getenv('CHAT_LINK_CHANNEL')
+CHAT_LINK_CHANNEL = 688125129456484366
 
 DEFENSE_MESSAGE = True  # if true, bot won't  speak to itself
 
 ugly = ['JeSuisLelijk', 'jesuislelijk']
-
-
-# runs the channel for mc chat link
-# print a message when the bot starts
-# async will make sure the different functions can run simultaneously
-async def chat_link():
-    await bot.wait_until_ready()
-    send_channel = bot.get_channel(688125129456484366)
-    tail = FileTail("../mscs/worlds/survival/console.out")
-    for line in tail:
-        if '[Server thread/INFO]' and '<' and '>' in line:
-            await send_channel.send(line[33:])
-            await asyncio.sleep(1)
 
 
 @bot.event
@@ -94,6 +82,14 @@ async def on_message(message):  # run when a message has been send
     if 'ilmango' in message.content:
         response = 'Mango, Mango, Mango mango mango, Mangooooooooooooooooooooooooooooooooooooooooooo'
         await message.channel.send(response, delete_after=20)
+
+    if message.channel.id == CHAT_LINK_CHANNEL:
+        msg = message.content
+        sender = message.author
+        with open("../mscs/worlds/survival/console.in", 'w') as f:
+            f.writelines('tellraw @a [\"<dc.{}> {}\"]\n'.format(str(sender)[:-5], str(msg)))
+            f.close()
+            await bot.process_commands(message)
 
     await bot.process_commands(message)
 
@@ -176,5 +172,23 @@ async def get_dcname(ctx, dc_name):
     result = 'This command doesn\'t work yet'
     await ctx.send(result)
 
-bot.loop.create_task(chat_link())
+
+# chat link
+def chat_link():
+    tail = FileTail("../mscs/worlds/survival/console.out")
+    for line in tail:
+        if '[Server thread/INFO]' and '<' and '>' in line:
+            return line
+    return
+
+
+async def link_async_func():
+    await bot.wait_until_ready()
+    line = functools.partial(chat_link())
+    send_channel = bot.get_channel(CHAT_LINK_CHANNEL)
+    await send_channel.send(line[33:])
+    await bot.loop.run_in_executor(None, chat_link())
+
+bot.loop.create_task(link_async_func())
+
 bot.run(token)
