@@ -82,7 +82,15 @@ async def on_message(message):  # run when a message has been send
 
     if 'ilmango' in message.content:
         response = 'Mango, Mango, Mango mango mango, Mangooooooooooooooooooooooooooooooooooooooooooo'
-        await message.channel.send(response, delete_after=20)
+        await message.channel.send(response, delete_after=30)
+
+    if 'stop lazy' in message.content:
+        response = 'stop being lazy prick'
+        await message.channel.send(response, delete_after=35)
+
+    if 'Stop lazy' in message.content:
+        response = 'stop being lazy prick'
+        await message.channel.send(response, delete_after=35)
 
     if message.channel.id == CHAT_LINK_CHANNEL:
         msg = message.content
@@ -174,38 +182,46 @@ async def get_dcname(ctx, dc_name):
     await ctx.send(result)
 
 
-# original code
-"""
-async def chat_link_mc():
-    await bot.wait_until_ready()
-    send_channel = bot.get_channel(CHAT_LINK_CHANNEL)
-    tail = FileTail("../mscs/worlds/survival/console.out")
-    
-    for line in tail:
-        if '[Server thread/INFO]' and '<' and '>' in line:
-            await send_channel.send(line[33:])
-            await asyncio.sleep(1)
-
-bot.loop.create_task(chat_link_mc())
-"""
+@bot.command(name='mob_bot', help='spawn the mob bot')
+@commands.has_any_role('Member', 'Trial Member')
+async def spawn_mob(ctx):
+    result = 'This command doesn\'t work yet'
+    await ctx.send(result)
 
 
-# chat link
+@bot.command(name='command', help='send any command to the server through discord')
+@commands.has_role('Staff')
+async def command(ctx, *cmd):
+    print(cmd)
+    send_command = ''
+    for i in cmd:
+        send_command += '{} '.format(i)
+    send_command = send_command[:-1]
+    with open("../mscs/worlds/survival/console.in", 'w') as f:
+        print(send_command[:-1])
+        c = '/{}'.format(send_command[:-1])
+        print(c)
+        f.writelines('/{}\n'.format(send_command))
+        f.close()
+
+
+# chat link blocking code
 def chat_link():
-    tail = FileTail("../mscs/worlds/survival/console.out")
+    tail = FileTail("../mscs/worlds/survival/console.out")  # tail the console.out file
     for line in tail:
-        if '[Server thread/INFO]' and '<' and '>' in line:
+        if '[Server thread/INFO]' and '<' and '>' in line:  # check if the message was in fact sent by a player
             return line
     return
 
 
+# chat link async function ran in executor
 async def link_async_func():
-    await bot.wait_until_ready()
-    send_channel = bot.get_channel(CHAT_LINK_CHANNEL)
-    with features.ThreadPoolExecutor() as pool:
-        while True:
-            line = await bot.loop.run_in_executor(pool, chat_link)
-            await send_channel.send(line[33:])
+    await bot.wait_until_ready()  # await until the bot is ready
+    send_channel = bot.get_channel(CHAT_LINK_CHANNEL)  # specify the chat link discord channel
+    with features.ThreadPoolExecutor() as pool:  # run a thread pool executor
+        while True:  # while true -> always
+            line = await bot.loop.run_in_executor(pool, chat_link)  # run chat_link in executor
+            await send_channel.send(line[33:])  # send the output to chat without timestamp and console msg type
 
 
 bot.loop.create_task(link_async_func())
