@@ -173,6 +173,21 @@ async def get_dcname(ctx, dc_name):
     await ctx.send(result)
 
 
+# original code
+"""
+async def chat_link_mc():
+    await bot.wait_until_ready()
+    send_channel = bot.get_channel(CHAT_LINK_CHANNEL)
+    tail = FileTail("../mscs/worlds/survival/console.out")
+    for line in tail:
+        if '[Server thread/INFO]' and '<' and '>' in line:
+            await send_channel.send(line[33:])
+            await asyncio.sleep(1)
+
+bot.loop.create_task(chat_link_mc())
+"""
+
+
 # chat link
 def chat_link():
     tail = FileTail("../mscs/worlds/survival/console.out")
