@@ -10,6 +10,7 @@ import chat_link as cl
 import functools
 from filetail import FileTail
 import asyncio
+import concurrent.futures as features
 
 bot = commands.Bot(command_prefix=('ig ', 'Ig '))  # set the command prefix
 
@@ -87,7 +88,7 @@ async def on_message(message):  # run when a message has been send
         msg = message.content
         sender = message.author
         with open("../mscs/worlds/survival/console.in", 'w') as f:
-            f.writelines('tellraw @a [\"<dc.{}> {}\"]\n'.format(str(sender)[:-5], str(msg)))
+            f.writelines('tellraw @a [\"dc: <{}> {}\"]\n'.format(str(sender)[:-5], str(msg)))
             f.close()
             await bot.process_commands(message)
 
@@ -179,6 +180,7 @@ async def chat_link_mc():
     await bot.wait_until_ready()
     send_channel = bot.get_channel(CHAT_LINK_CHANNEL)
     tail = FileTail("../mscs/worlds/survival/console.out")
+    
     for line in tail:
         if '[Server thread/INFO]' and '<' and '>' in line:
             await send_channel.send(line[33:])
@@ -199,11 +201,12 @@ def chat_link():
 
 async def link_async_func():
     await bot.wait_until_ready()
-    line = functools.partial(chat_link())
     send_channel = bot.get_channel(CHAT_LINK_CHANNEL)
-    await send_channel.send(line[33:])
-    await bot.loop.run_in_executor(None, chat_link())
+    with features.ThreadPoolExecutor() as pool:
+        while True:
+            line = await bot.loop.run_in_executor(pool, chat_link)
+            await send_channel.send(line[33:])
+
 
 bot.loop.create_task(link_async_func())
-
 bot.run(token)
