@@ -12,6 +12,9 @@ import concurrent.futures as features  # import concurrent.features for the exec
 from server_data import CHAT_LINK_CHANNEL
 from server_data import console_in
 from server_data import console_out
+from server_data import seed
+from server_data import server_locations
+from server_data import ips
 
 bot = commands.Bot(command_prefix=('ig ', 'Ig '))  # set the command prefix
 
@@ -151,9 +154,43 @@ async def playerscore(ctx, objective, player):
     await ctx.send(result)
 
 
+@bot.command(name='seed', help='Display the server\'s seed')
+async def show_seed(ctx):
+    result = seed
+    await ctx.send(f'`{result}`')
+
+
+# commands only Members and Trial Member can use
+@bot.command(name='mob_bot', help='spawn the mob bot')
+@commands.has_any_role('Member', 'Trial Member')
+async def spawn_mob(ctx):
+    result = 'This command doesn\'t work yet'
+    await ctx.send(result)
+
+
+@bot.command(name='ip', help='spawn the mob bot')
+@commands.has_any_role('Member', 'Trial Member')
+async def show_ip(ctx, server):
+    result = ips[server]
+    await ctx.send(f'`{result}`')
+
+
+@bot.command(name='location', help='show the nether portal coordinates of something')
+@commands.has_any_role('Member', 'Trial Member')
+async def spawn_mob(ctx, *locations):
+    location = ''
+    for l in locations:
+        location += l + ' '
+    location = location[:-1]
+    location = location.replace('_', ' ')
+    result = server_locations[location.lower()]
+    await ctx.send(f'`{location.lower()} nether roof coordinates: {result}`')
+
+
 # link the minecraft ign to the discord name
 # pass_context makes sure we can read info like message sender and more
 @bot.command(name='link_name', help='link minecraft ign to discord screen name', pass_context=True)
+@commands.has_any_role('Member', 'Trial Member')
 async def link_name(ctx, mc_name):
     dc_name = ctx.author  # the discord name is the name of the author of the message
     pd.link_dc_ign(mc_name, dc_name)
@@ -162,14 +199,6 @@ async def link_name(ctx, mc_name):
              f'discord name: {dc_name}\n' \
              f'minecraft ign: {mc_name}\n' \
              f'```'
-    await ctx.send(result)
-
-
-# commands only Members and Trial Member can use
-@bot.command(name='mob_bot', help='spawn the mob bot')
-@commands.has_any_role('Member', 'Trial Member')
-async def spawn_mob(ctx):
-    result = 'This command doesn\'t work yet'
     await ctx.send(result)
 
 
@@ -184,14 +213,14 @@ async def status(ctx):
 
 @bot.command(name='get_mcname', help='show ign by discord name', pass_context=True)
 @commands.has_any_role('Member', 'Trial Member')
-async def get_mcname(ctx, mc_name):
+async def get_mcname(ctx, dc_name):
     result = 'This command doesn\'t work yet'
     await ctx.send(result)
 
 
 @bot.command(name='get_dcname', help='show ign by discord name', pass_context=True)
 @commands.has_any_role('Member', 'Trial Member')
-async def get_dcname(ctx, dc_name):
+async def get_dcname(ctx, mc_name):
     result = 'This command doesn\'t work yet'
     await ctx.send(result)
 

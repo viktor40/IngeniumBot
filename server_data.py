@@ -3,21 +3,36 @@ CHAT_LINK_CHANNEL = 688125129456484366
 seed = '-8558479263656096884'
 
 ips = {'survival': '158.69.122.191',
-      'creative': '158.69.122.191:25564',
-      'flatworld': '158.69.122.191:25567',
-      'creative2': '109.247.2.239',
-      'survival2': '158.69.122.191:25575'}
+       'creative': '158.69.122.191:25564',
+       'flatworld': '158.69.122.191:25567',
+       'creative2': '109.247.2.239',
+       'survival2': '158.69.122.191:25575'}
 
-server_locations = {'spawn': '1 1',
-                    'end_portal': '273 -21',
-                    'vindicate': '224 -352',
-                    'community_island': '80 -7',
-                    'halloween district': '-1221 -1060'}
+server_locations = {'spawn': '1, 1',
+                    'end portal': '273, -21',
+                    'vindicate': '224, -352',
+                    'community island': '80, -7',
+                    'halloween district': '-1221, -1060',
+                    'ghast farm': '80, -191',
+                    'gold farm': '192, -9',
+                    'sand farm old': '-239, -360',
+                    'sand farm new': '-1088, 2045',
+                    'witch farm': '245, 53',
+                    'flower farm': '63, -112',
+                    'slime farm': '-873, 1512',
+                    'gravel mining 1': '-328, -102',
+                    'gravel mining 2': '614, 8',
+                    'gravel mining 3': '-128, -574',
+                    'gravel mining 4': '442, 650',
+                    'mining mesa': '-789, 60',
+                    'mesa quarry': '1804, 1783',
+                    'diamond mining north enterance': '351, -1628',
+                    'diamond mining south enterance': '353, -1496',
+                    'diamond mining north end portal': '470, -1673',
+                    'diamond mining south end portal': '250, -1330'}
 
-# whitelist = '../mscs/worlds/survival/whitelist.json'
-whitelist = 'whitelist.json'
-# scoreboard_path = '../mscs/worlds/survival/survival/data/scoreboard.dat'
-scoreboard_path = 'scoreboard.dat'
+whitelist = '../mscs/worlds/survival/whitelist.json'
+scoreboard_path = '../mscs/worlds/survival/survival/data/scoreboard.dat'
 stat_directory = '../mscs/worlds/survival/survival/stats'
 
 console_in = "../mscs/worlds/survival/console.in"
