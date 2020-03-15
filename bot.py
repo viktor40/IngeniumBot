@@ -125,6 +125,7 @@ async def on_member_join(member):
     await welcome.send(response)
 
 
+# commands everyone can uses
 # set different commands the bot will respond to
 # name sets the commands name, help will trigger at ig help
 @bot.command(name='test', help='test if the bot is working')
@@ -182,6 +183,7 @@ async def get_dcname(ctx, dc_name):
     await ctx.send(result)
 
 
+# commands only Members and Trial Member can use
 @bot.command(name='mob_bot', help='spawn the mob bot')
 @commands.has_any_role('Member', 'Trial Member')
 async def spawn_mob(ctx):
@@ -189,20 +191,21 @@ async def spawn_mob(ctx):
     await ctx.send(result)
 
 
+# commands only Owner and Staff can use
+# Staff and Owner can send commands via discord chat to the minecraft server
 @bot.command(name='command', help='send any command to the server through discord')
-@commands.has_role('Staff')
+@commands.has_any_role('Staff', 'Owner')
+# *cmd: the * will make it so that all variables typed in will be stored in the command variable
+# if one were to only use cmd as an argument only the first word after the command name would be in the variable
+# ig command some mc command -> would be stored in cmd as -> cmd = (some, mc, command)
 async def command(ctx, *cmd):
-    print(cmd)
-    send_command = ''
-    for i in cmd:
-        send_command += '{} '.format(i)
-    send_command = send_command[:-1]
-    with open("../mscs/worlds/survival/console.in", 'w') as f:
-        print(send_command[:-1])
-        c = '/{}'.format(send_command[:-1])
-        print(c)
-        f.writelines('/{}\n'.format(send_command))
-        f.close()
+    send_command = ''  # initialize an empty string to add the extra variables in the tuple to
+    for i in cmd:  # go over the tuple containing
+        send_command += '{} '.format(i)  # add nth value in tuple and a space after id
+    send_command = send_command[:-1]  # remove the last space from the cmd
+    with open("../mscs/worlds/survival/console.in", 'w') as f:  # open the console.in file to write the commands
+        f.writelines('/{}\n'.format(send_command))  # write the command in the console.in file
+        f.close()  # close the file
 
 
 # chat link blocking code
@@ -210,7 +213,8 @@ def chat_link():
     tail = FileTail("../mscs/worlds/survival/console.out")  # tail the console.out file
     for line in tail:
         if '[Server thread/INFO]' and '<' and '>' in line:  # check if the message was in fact sent by a player
-            return line
+            if line[33] == '>':
+                return line
     return
 
 
@@ -224,5 +228,5 @@ async def link_async_func():
             await send_channel.send(line[33:])  # send the output to chat without timestamp and console msg type
 
 
-bot.loop.create_task(link_async_func())
-bot.run(token)
+bot.loop.create_task(link_async_func())  # run the loop for the chat link
+bot.run(token)  # run the loop for the bot
