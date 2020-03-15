@@ -6,7 +6,7 @@ ips = {'survival': '158.69.122.191',
        'creative': '158.69.122.191:25564',
        'flatworld': '158.69.122.191:25567',
        'flatworld2': '109.247.2.239',
-       'survival2': '158.69.122.191:25575'}
+       'test': '158.69.122.191:25575'}
 
 server_locations = {'spawn': '1, 1',
                     'end portal': '273, -21',
@@ -29,7 +29,8 @@ server_locations = {'spawn': '1, 1',
                     'diamond mining north entrance': '351, -1628',
                     'diamond mining south entrance': '353, -1496',
                     'diamond mining north end portal': '470, -1673',
-                    'diamond mining south end portal': '250, -1330'}
+                    'diamond mining south end portal': '250, -1330',
+                    'wither killer': '51, 26'}
 
 whitelist = '../mscs/worlds/survival/whitelist.json'
 scoreboard_path = '../mscs/worlds/survival/survival/data/scoreboard.dat'

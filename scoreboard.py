@@ -114,7 +114,7 @@ def display(sc, n):
 def player(sc, ign):
     # fetch the info about the objective required to get
     objective, sub_type, datatype = check_type(sc)
-    directory = 'stats'
+    directory = stat_directory
     players = player_data.generate()
 
     for uuid, name in players.items():

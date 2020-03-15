@@ -94,10 +94,10 @@ playerscore_help = f'Print the score in a scoreboard of a certain player.\n' \
 ip_help = f'Get the ip of the server. \n' \
           f'The different possibilities are:\n' \
           f'survival -> get the SMP ip.\n' \
-          f'survival2 -> get the ip of the server where we test things like updates etc.\n' \
           f'creative -> get the creative copy ip.\n' \
           f'flatworld -> get the flatworld testingserver ip.\n' \
           f'flatworld2 -> get the alternate flatworld ip (the sandstone flatworld).\n' \
+          f'test -> get the ip of the server where we test things like updates etc.'
 
 server_location_help = f'Get the coordinates of important locations.\n' \
                        f'The coordinates are always to portals on the nether roof.\n' \
@@ -118,7 +118,8 @@ server_location_help = f'Get the coordinates of important locations.\n' \
                        f'sand farm new, ' \
                        f'witch farm, ' \
                        f'flower farm, ' \
-                       f'slime farm\n' \
+                       f'slime farm' \
+                       f'whiter killer\n' \
                        f'\n' \
                        f'-----Mining locations-----' \
                        f'gravel mining 1, ' \
@@ -133,3 +134,24 @@ server_location_help = f'Get the coordinates of important locations.\n' \
                        f'diamond mining south entrance, ' \
                        f'diamond mining north end portal, ' \
                        f'diamond mining south end portal'
+
+status_help = f'Check the server status.\n' \
+              f'The command will output the server status, the server version and the number of players online.\n' \
+              f'You can either use survival, creative or flatworld to see the status of the different servers.'
+
+players_help = f'See which players are online.\n' \
+               f'The command will output the number of players online as well as which players are online.\n' \
+               f'This command won\'t work if the server is offline (see server status command).\n' \
+               f'You can either use survival, creative or flatworld to see the status of the different servers.'
+
+mscs_help = f'Execute any mscs command on the server itself. \n' \
+            f'Commands that are possible will be listed but not all of them will be listed.\n' \
+            f'It\'s a good idea to only use commands listed in here as others can be a bit trickier.\n' \
+            f'The commands that can be used are:\n' \
+            f'status, restart [server], start [server], stop [server], ls, force-stop [server], force-start [server]\n' \
+            f'All commands should be self explanatory, except for ls. ls will list the worlds that are on the server. \n' \
+            f'This command is only accessible to members with the role Staff or Owner.'
+
+shell_help = f'Only use this when you know what you\'re doing.\n' \
+             f'This command allows you to run any shell command onto the server and get it\'s result.\n' \
+             f'Although in general, you shouldn\'t use this.'

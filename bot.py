@@ -20,6 +20,10 @@ from help import scoreboard_help
 from help import playerscore_help
 from help import ip_help
 from help import server_location_help
+from help import status_help
+from help import players_help
+from help import mscs_help
+from help import shell_help
 
 bot = commands.Bot(command_prefix=('ig ', 'Ig '))  # set the command prefix
 
@@ -106,7 +110,7 @@ async def on_message(message):  # run when a message has been send
         msg = message.content
         sender = message.author
         if not msg.startswith('ig '):
-            with open("../mscs/worlds/survival/console.in", 'w') as f:
+            with open(console_in, 'w') as f:
                 f.writelines('tellraw @a [\"dc: <{}> {}\"]\n'.format(str(sender)[:-5], str(msg)))
                 f.close()
                 await bot.process_commands(message)
@@ -167,9 +171,10 @@ async def show_seed(ctx):
 # commands only Members and Trial Member can use
 @bot.command(name='mob_bot', help='spawn the mob bot')
 @commands.has_any_role('Member', 'Trial Member')
-async def spawn_mob(ctx):
-    result = 'This command doesn\'t work yet'
-    await ctx.send(result)
+async def spawn_mob():
+    with open(console_in, 'w') as f:
+        f.writelines('player bot spawn at 256.70 106.00 -187.53')
+        f.close()
 
 
 @bot.command(name='ip', help=ip_help)
@@ -181,14 +186,14 @@ async def show_ip(ctx, server):
 
 @bot.command(name='location', help=server_location_help)
 @commands.has_any_role('Member', 'Trial Member')
-async def spawn_mob(ctx, *locations):
-    location = ''
+async def location(ctx, *locations):
+    place = ''
     for l in locations:
-        location += l + ' '
-    location = location[:-1]
-    location = location.replace('_', ' ')
-    result = server_locations[location.lower()]
-    await ctx.send(f'`{location.lower()} nether roof coordinates: {result}`')
+        place += l + ' '
+    place = place[:-1]
+    place = place.replace('_', ' ')
+    result = server_locations[place.lower()]
+    await ctx.send(f'`{place.lower()} nether roof coordinates: {result}`')
 
 
 # link the minecraft ign to the discord name
@@ -207,12 +212,33 @@ async def link_name(ctx, mc_name):
 
 
 # write the server status to the channel
-@bot.command(name='status', help='check the server status')
+@bot.command(name='status', help=status_help)
 @commands.has_any_role('Member', 'Trial Member')
-async def status(ctx):
-    result = subprocess.run(['mscs', 'status'], stdout=subprocess.PIPE)  # execute mscs status in linux console
-    result.stdout.decode('utf-8')
-    await ctx.send(result)
+async def status(ctx, server):
+    cmd_out = subprocess.run(['mscs', 'status'], stdout=subprocess.PIPE)  # execute mscs status in linux console
+    decoded = cmd_out.stdout.decode('utf8')
+    info = decoded.split('\n')
+    for line in info:  # is server: is in the line
+        if server + ':' in line:  # then the status is in that line, so we just write that in chat
+            result = '```' + line[2:] + '```'  # add discord code block formatting
+            await ctx.send(result)
+
+
+@bot.command(name='online', help=players_help)
+@commands.has_any_role('Member', 'Trial Member')
+async def online(ctx, server):
+    cmd_out = subprocess.run(['mscs', 'status'], stdout=subprocess.PIPE)  # execute mscs status in linux console
+    # get stdout from CompletedProcess class
+    # decode b string to utf8
+    decoded = cmd_out.stdout.decode('utf8')
+    info = decoded.split('\n')  # split into tuple on \n
+    for pos, line in enumerate(info):
+        if server + ':' in line:
+            number = line[line.find('(') + 1:line.find(')')]
+            players = info[pos + 1][4:]
+            result = f'```{number}\n' \
+                     f'{players}```'
+            await ctx.send(result)
 
 
 @bot.command(name='get_mcname', help='show ign by discord name', pass_context=True)
@@ -244,6 +270,22 @@ async def command(ctx, *cmd):
     with open(console_in, 'w') as f:  # open the console.in file to write the commands
         f.writelines('/{}\n'.format(send_command))  # write the command in the console.in file
         f.close()  # close the file
+
+
+@bot.command(name='mscs', help=mscs_help)
+@commands.has_any_role('Staff', 'Owner')
+async def mscs(ctx, *cmd):
+    cmd = subprocess.run(['mscs'] + [i for i in cmd], stdout=subprocess.PIPE)  # execute mscs cmd in linux console
+    result = '```' + cmd.stdout.decode('utf8') + '```'
+    await ctx.send(result)
+
+
+@bot.command(name='shell_command', help=shell_help)
+@commands.has_any_role('Staff', 'Owner')
+async def shell_command(ctx, *cmd):
+    cmd = subprocess.run([i for i in cmd], stdout=subprocess.PIPE)  # execute command in linux console
+    result = '```' + cmd.stdout.decode('utf8') + '```'
+    await ctx.send(result)
 
 
 # chat link blocking code
