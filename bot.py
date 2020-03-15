@@ -1,24 +1,25 @@
 import os  # import module for directory management
 from dotenv import load_dotenv  # load module for usage of a .env file
 import subprocess  # import module used to do linux code execution
-from discord.ext import commands
+from discord.ext import commands  # import the commands module from discord.py
 from discord.ext import tasks  # import  command module from discord.py
-import player_data as pd
+import player_data as pd  # import the script to get player data
 import discord  # import discord.py module
 import scoreboard as sc  # import scoreboard.py
-import chat_link as cl
-import functools
-from filetail import FileTail
-import asyncio
-import concurrent.futures as features
+from filetail import FileTail  # import the script to tail files like in linux
+import concurrent.futures as features  # import concurrent.features for the executor for the chat link
+
+from server_data import CHAT_LINK_CHANNEL
+from server_data import console_in
+from server_data import console_out
 
 bot = commands.Bot(command_prefix=('ig ', 'Ig '))  # set the command prefix
 
 load_dotenv()  # load the .env file containing id's that have to be kept secret for security
 token = os.getenv('DISCORD_TOKEN')  # get our discord bot token from .env
-CHAT_LINK_CHANNEL = 688125129456484366
 
-DEFENSE_MESSAGE = True  # if true, bot won't  speak to itself
+# if true, bot won't  speak to itself
+DEFENSE_MESSAGE = True
 
 ugly = ['JeSuisLelijk', 'jesuislelijk']
 
@@ -40,12 +41,13 @@ async def on_message(message):  # run when a message has been send
     for item in ('JeSuisLelijk', 'jesuislelijk'):
         if item in message.content:
             """await will wait and trigger when only if the if statement is true"""
-            await message.channel.send('I love Nanor and Toot')  # delete the message after 100 sec
+            # delete the message after 100 sec
+            await message.channel.send('I love Nanor and Toot', delete_after=20)
 
     for item in ('Stormloop', 'stormloop'):
         if item in message.content:
             """await will wait and trigger when only if the if statement is true"""
-            await message.channel.send('The biggest pimp ever')  # delete the message after 100 sec
+            await message.channel.send('The biggest pimp ever', delete_after=60)  # delete the message after 60 sec
 
     # if the message contains 69 answer nice
     if '69' in message.content:
@@ -103,7 +105,7 @@ async def on_message(message):  # run when a message has been send
     await bot.process_commands(message)
 
 
-# when a new player joins, write the message
+# when a new player joins, write the welcome message
 @bot.event
 async def on_member_join(member):
     # define the channel id's for the different channels it wants to mention
@@ -132,14 +134,6 @@ async def on_member_join(member):
 async def test_bot(ctx):
     response = 'Don\'t worry, I\'m working!'
     await ctx.send(response)
-
-
-# write the server status to the channel
-@bot.command(name='status', help='check the server status')
-async def status(ctx):
-    result = subprocess.run(['mscs', 'status'], stdout=subprocess.PIPE)  # execute mscs status in linux console
-    result.stdout.decode('utf-8')
-    await ctx.send(result)
 
 
 # scoreboard command
@@ -171,22 +165,33 @@ async def link_name(ctx, mc_name):
     await ctx.send(result)
 
 
+# commands only Members and Trial Member can use
+@bot.command(name='mob_bot', help='spawn the mob bot')
+@commands.has_any_role('Member', 'Trial Member')
+async def spawn_mob(ctx):
+    result = 'This command doesn\'t work yet'
+    await ctx.send(result)
+
+
+# write the server status to the channel
+@bot.command(name='status', help='check the server status')
+@commands.has_any_role('Member', 'Trial Member')
+async def status(ctx):
+    result = subprocess.run(['mscs', 'status'], stdout=subprocess.PIPE)  # execute mscs status in linux console
+    result.stdout.decode('utf-8')
+    await ctx.send(result)
+
+
 @bot.command(name='get_mcname', help='show ign by discord name', pass_context=True)
+@commands.has_any_role('Member', 'Trial Member')
 async def get_mcname(ctx, mc_name):
     result = 'This command doesn\'t work yet'
     await ctx.send(result)
 
 
 @bot.command(name='get_dcname', help='show ign by discord name', pass_context=True)
-async def get_dcname(ctx, dc_name):
-    result = 'This command doesn\'t work yet'
-    await ctx.send(result)
-
-
-# commands only Members and Trial Member can use
-@bot.command(name='mob_bot', help='spawn the mob bot')
 @commands.has_any_role('Member', 'Trial Member')
-async def spawn_mob(ctx):
+async def get_dcname(ctx, dc_name):
     result = 'This command doesn\'t work yet'
     await ctx.send(result)
 
@@ -203,14 +208,14 @@ async def command(ctx, *cmd):
     for i in cmd:  # go over the tuple containing
         send_command += '{} '.format(i)  # add nth value in tuple and a space after id
     send_command = send_command[:-1]  # remove the last space from the cmd
-    with open("../mscs/worlds/survival/console.in", 'w') as f:  # open the console.in file to write the commands
+    with open(console_in, 'w') as f:  # open the console.in file to write the commands
         f.writelines('/{}\n'.format(send_command))  # write the command in the console.in file
         f.close()  # close the file
 
 
 # chat link blocking code
 def chat_link():
-    tail = FileTail("../mscs/worlds/survival/console.out")  # tail the console.out file
+    tail = FileTail(console_out)  # tail the console.out file
     for line in tail:
         if '[Server thread/INFO]' and '<' and '>' in line:  # check if the message was in fact sent by a player
             if line[33] == '>':

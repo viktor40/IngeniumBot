@@ -18,3 +18,5 @@ while 1:
         file.seek(where)
     else:
         print(line)  # already has newline
+
+

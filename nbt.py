@@ -2,7 +2,7 @@ import nbtlib  # import module for nbt database handling
 import time  # inport time module for performance testing
 import player_data  # import uuid_converter.py
 
-scoreboard_path = '../mscs/worlds/survival/survival/data/scoreboard.dat'
+from server_data import scoreboard_path
 
 
 def get_score(objective):

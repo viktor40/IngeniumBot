@@ -2,48 +2,12 @@ import json  # import module for json file handling
 import player_data  # import uuid_converter.py
 import math
 import nbt
-import time
 
-# map the commands to the  JSON file stat.json containing the built in scoreboards
-JSON_objectives = {'play_minutes': ('minecraft:play_one_minute', 'minecraft:custom'),
-                   'deaths': ('minecraft:deaths', 'minecraft:custom'),
-                   'time_since_death_minutes': ('minecraft:time_since_death', 'minecraft:custom'),
-                   'time_since_death_hours': ('minecraft:time_since_death', 'minecraft:custom'),
-                   'open_shulker': ('minecraft:open_shulker_box', 'minecraft:custom'),
-                   'mobs_killed': ('minecraft:mob_kills', 'minecraft:custom'),
-                   'traded': ('minecraft:traded_with_villager', 'minecraft:custom'),
-                   'distance_flown_m': ('minecraft:fly_one_cm', 'minecraft:custom'),
-                   'distance_walked_m': ('minecraft:fly_one_cm', 'minecraft:custom'),
-                   'distance_flown_km': ('minecraft:fly_one_cm', 'minecraft:custom'),
-                   'distance_walked_km': ('minecraft:fly_one_cm', 'minecraft:custom'),
-
-                   'pick_uses': ('minecraft:diamond_pickaxe', 'minecraft:used'),
-                   'hoe_uses': ('minecraft:diamond_hoe', 'minecraft:used'),
-                   'axe_uses': ('minecraft:diamond_axe', 'minecraft:used'),
-                   'shovel_uses': ('minecraft:diamond_shovel', 'minecraft:used'),
-                   'sponges_placed': ('minecraft:sponge', 'minecraft:used'),
-                   'slime_placed': ('minecraft:slime_block', 'minecraft:used'),
-                   'stone_placed': ('minecraft:stone', 'minecraft:used'),
-                   'grass_placed': ('minecraft:grass_block', 'minecraft:used'),
-                   'rails_placed': ('minecraft:rail', 'minecraft:used'),
-
-                   'redstone_torches_crafted': ('minecraft:redstone_torch', 'minecraft:crafted'),
-                   'repeaters_crafted': ('minecraft:repeater', 'minecraft:crafted'),
-                   'pistons_crafted': ('minecraft:piston', 'minecraft:crafted'),
-                   'comparators_crafted': ('minecraft:comparator', 'minecraft:crafted'),
-                   'observers_crafted': ('minecraft:observer', 'minecraft:crafted'),
-                   'droppers_crafted': ('minecraft:dropper', 'minecraft:crafted'),
-
-                   'quartz_mined': ('minecraft:nether_quartz_ore', 'minecraft:mined'),
-                   'diamonds_mined': ('minecraft:diamond_ore', 'minecraft:mined'),
-                   'obsidian_mined': ('minecraft:obsidian', 'minecraft:mined')}
-
-# map the commands to the NBT file scoreboard.dat containing the custom scoreboards
-NBT_objectives = {'slime_peri': 'BlocksMinedPeri',
-                  'witch_peri': 'PeriBlocksMined'}
-
-objectives_m = ['distance_flown_m', 'distance_walked_m']
-objectives_km = ['distance_flown_km', 'distance_walked_km']
+from server_data import JSON_objectives
+from server_data import NBT_objectives
+from server_data import objectives_m
+from server_data import objectives_km
+from server_data import stat_directory
 
 
 # generate a string formatted to display a scoreboard
@@ -97,7 +61,6 @@ def display(sc, n):
     objective, sub_type, datatype = check_type(sc)
 
     # set the directory of the stat files
-    directory = '../mscs/worlds/survival/survival/stats'
     stat = []
 
     # go through the dictionary and get the uuid and playername
@@ -107,7 +70,7 @@ def display(sc, n):
 
         for id, playername in mapped_uuid.items():
             try:
-                data = get_json_stat(directory, sub_type, objective, sc, id)
+                data = get_json_stat(stat_directory, sub_type, objective, sc, id)
                 if int(data) > 0:
                     # add to the list containing the playername and score
                     stat.append((playername, data))

@@ -4,8 +4,7 @@ import json
 import re
 import numpy as np
 import time
-
-whitelist = '../mscs/worlds/survival/whitelist.json'
+from server_data import whitelist
 
 
 # generate a dictionary mapping the uuid's to the playernames
@@ -79,3 +78,4 @@ def link_dc_ign(mc_name, dc_name):
     # append the names to the ndarray along the 0th axis
     file_content = np.append(file_content, [[dc_name, mc_name]], axis=0)
     np.savetxt(datafile, X=file_content, fmt='%s')  # write the new array to the file
+
