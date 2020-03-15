@@ -105,10 +105,11 @@ async def on_message(message):  # run when a message has been send
     if message.channel.id == CHAT_LINK_CHANNEL:
         msg = message.content
         sender = message.author
-        with open("../mscs/worlds/survival/console.in", 'w') as f:
-            f.writelines('tellraw @a [\"dc: <{}> {}\"]\n'.format(str(sender)[:-5], str(msg)))
-            f.close()
-            await bot.process_commands(message)
+        if not msg.startswith('ig '):
+            with open("../mscs/worlds/survival/console.in", 'w') as f:
+                f.writelines('tellraw @a [\"dc: <{}> {}\"]\n'.format(str(sender)[:-5], str(msg)))
+                f.close()
+                await bot.process_commands(message)
 
     await bot.process_commands(message)
 
@@ -250,7 +251,10 @@ def chat_link():
     tail = FileTail(console_out)  # tail the console.out file
     for line in tail:
         if '[Server thread/INFO]' and '<' and '>' in line:  # check if the message was in fact sent by a player
-            if line[33] == '>':
+            if line[33] == '<':
+                return line
+        elif '[Server thread/INFO]' and '*' in line:
+            if line[33] == '*':
                 return line
     return
 
