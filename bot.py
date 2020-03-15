@@ -16,6 +16,11 @@ from server_data import seed
 from server_data import server_locations
 from server_data import ips
 
+from help import scoreboard_help
+from help import playerscore_help
+from help import ip_help
+from help import server_location_help
+
 bot = commands.Bot(command_prefix=('ig ', 'Ig '))  # set the command prefix
 
 load_dotenv()  # load the .env file containing id's that have to be kept secret for security
@@ -139,8 +144,6 @@ async def test_bot(ctx):
     await ctx.send(response)
 
 
-# scoreboard command
-scoreboard_help = f'print the scoreboard you want to get to the chat. '
 @bot.command(name='scoreboard', help=scoreboard_help)
 async def scoreboard(ctx, objective, number=''):
     result = sc.display(objective, number)  # get result from the scoreboard display function
@@ -148,7 +151,7 @@ async def scoreboard(ctx, objective, number=''):
 
 
 # command to fetch scoreboard data of a single player and a single scoreboard
-@bot.command(name='playerscore', help='display a single score for a player')
+@bot.command(name='playerscore', help=playerscore_help)
 async def playerscore(ctx, objective, player):
     result = sc.player(objective, player)
     await ctx.send(result)
@@ -168,14 +171,14 @@ async def spawn_mob(ctx):
     await ctx.send(result)
 
 
-@bot.command(name='ip', help='spawn the mob bot')
+@bot.command(name='ip', help=ip_help)
 @commands.has_any_role('Member', 'Trial Member')
 async def show_ip(ctx, server):
     result = ips[server]
     await ctx.send(f'`{result}`')
 
 
-@bot.command(name='location', help='show the nether portal coordinates of something')
+@bot.command(name='location', help=server_location_help)
 @commands.has_any_role('Member', 'Trial Member')
 async def spawn_mob(ctx, *locations):
     location = ''

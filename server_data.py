@@ -5,7 +5,7 @@ seed = '-8558479263656096884'
 ips = {'survival': '158.69.122.191',
        'creative': '158.69.122.191:25564',
        'flatworld': '158.69.122.191:25567',
-       'creative2': '109.247.2.239',
+       'flatworld2': '109.247.2.239',
        'survival2': '158.69.122.191:25575'}
 
 server_locations = {'spawn': '1, 1',
@@ -26,8 +26,8 @@ server_locations = {'spawn': '1, 1',
                     'gravel mining 4': '442, 650',
                     'mining mesa': '-789, 60',
                     'mesa quarry': '1804, 1783',
-                    'diamond mining north enterance': '351, -1628',
-                    'diamond mining south enterance': '353, -1496',
+                    'diamond mining north entrance': '351, -1628',
+                    'diamond mining south entrance': '353, -1496',
                     'diamond mining north end portal': '470, -1673',
                     'diamond mining south end portal': '250, -1330'}
 
