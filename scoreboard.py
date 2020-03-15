@@ -87,7 +87,7 @@ def display(sc, n):
         data = nbt.get_score(objective)
         for i in data:
             if i[1] == 0:
-                return
+                pass
             else:
                 stat.append(tuple(i))
     else:  # return nothing if the command is unknown

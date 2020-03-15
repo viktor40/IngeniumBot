@@ -14,8 +14,10 @@ server_locations = {'spawn': '1 1',
                     'community_island': '80 -7',
                     'halloween district': '-1221 -1060'}
 
-whitelist = '../mscs/worlds/survival/whitelist.json'
-scoreboard_path = '../mscs/worlds/survival/survival/data/scoreboard.dat'
+# whitelist = '../mscs/worlds/survival/whitelist.json'
+whitelist = 'whitelist.json'
+# scoreboard_path = '../mscs/worlds/survival/survival/data/scoreboard.dat'
+scoreboard_path = 'scoreboard.dat'
 stat_directory = '../mscs/worlds/survival/survival/stats'
 
 console_in = "../mscs/worlds/survival/console.in"
