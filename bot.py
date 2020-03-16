@@ -168,6 +168,18 @@ async def show_seed(ctx):
     await ctx.send(f'`{result}`')
 
 
+# divide the coords by 8
+@bot.command(name='ow2nether', help='Convert overworld coordinates to nether coordinates.')
+async def ow2n(ctx, x, z):
+    await ctx.send(f'`{x}, {z} -> {round(int(x) / 8)}, {round(int(z) / 8)}`')
+
+
+# multiply by 8
+@bot.command(name='nether2ow', help='Convert nether coordinates to overworld coordinates.')
+async def n2ow(ctx, x, z):
+    await ctx.send(f'`{x}, {z} -> {round(int(x) * 8)}, {round(int(z) * 8)}`')
+
+
 # commands only Members and Trial Member can use
 @bot.command(name='mob_bot', help='spawn the mob bot')
 @commands.has_any_role('Member', 'Trial Member')
