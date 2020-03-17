@@ -3,6 +3,7 @@ import player_data  # import uuid_converter.py
 import math
 import nbt
 
+# get the required data to execute the commands like the objectives and directories
 from server_data import JSON_objectives
 from server_data import NBT_objectives
 from server_data import objectives_m
@@ -61,6 +62,8 @@ def display(sc, n):
     objective, sub_type, datatype = check_type(sc)
     stat = []
 
+    # we try to use as many JSON objectives as possible
+    # this because reading out JSON files is an order of magnitude faster than reading out NBT files
     # go through the dictionary and get the uuid and playername
     if datatype == 'JSON':
         # get the dictionary containing the uuid and playernames

@@ -1,5 +1,4 @@
 import nbtlib  # import module for nbt database handling
-import time  # inport time module for performance testing
 import player_data  # import uuid_converter.py
 
 from server_data import scoreboard_path

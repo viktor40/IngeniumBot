@@ -253,6 +253,7 @@ async def status(ctx, server):
             await ctx.send(result)
 
 
+# show how many players are online and which players are online
 @bot.command(name='online', help=players_help)
 @commands.has_any_role('Member', 'Trial Member')
 async def online(ctx, server):
@@ -306,18 +307,20 @@ async def player_info(ctx, name):
     await ctx.send('```' + result + '```')
 
 
+# next 2 are analogous to player_info but showing less
+# these are only  small utility commands to know who's who in game and on dc
 @bot.command(name='get_mcname', help='show ign by discord name')
 @commands.has_any_role('Member', 'Trial Member')
 async def get_mcname(ctx, dc_name):
-    result = 'This command doesn\'t work yet'
-    await ctx.send('```' + result + '```')
+    dc, mc = pd.info(dc_name)
+    await ctx.send(f'```{dc} is {mc} in minecraft')
 
 
-@bot.command(name='get_dcname', help='show ign by discord name')
+@bot.command(name='get_dcname', help='show discord name by ign name')
 @commands.has_any_role('Member', 'Trial Member')
 async def get_dcname(ctx, mc_name):
-    result = 'This command doesn\'t work yet'
-    await ctx.send(result)
+    dc, mc = pd.info(mc_name)
+    await ctx.send(f'```{mc} is {dc} in minecraft')
 
 
 # commands only Owner and Staff can use
