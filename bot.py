@@ -86,7 +86,7 @@ async def on_message(message):  # run when a message has been send
 
     # respond to oof
     if message.content in ('Oof', 'oof'):
-        response = 'Oof you done goofed son'
+        response = 'Oof you done goofed!'
         await message.channel.send(response)
 
     # respond to happy birthday
@@ -98,11 +98,7 @@ async def on_message(message):  # run when a message has been send
         response = 'Mango, Mango, Mango mango mango, Mangooooooooooooooooooooooooooooooooooooooooooo'
         await message.channel.send(response, delete_after=30)
 
-    if 'stop lazy' in message.content:
-        response = 'stop being lazy prick'
-        await message.channel.send(response, delete_after=35)
-
-    if 'Stop lazy' in message.content:
+    if 'stop lazy' or 'Stop lazy' in message.content:
         response = 'stop being lazy prick'
         await message.channel.send(response, delete_after=35)
 
@@ -127,13 +123,15 @@ async def on_member_join(member):
     self_roles = bot.get_channel(611188046339244032)
     server_rules_and_info = bot.get_channel(611184197041651718)
     general_chat = bot.get_channel(611184705693417472)
+    introduce_yourself = bot.get_channel(635534011325743111)
 
     # mention with .mention, \n will add a newline in the f string
     response = (f'Hi {member.mention}, welcome to the Ingenium Discord server!. \n'
                 f'You can find our rules as well as other information about the server in {server_rules_and_info.mention}. \n'
                 f'If you want to apply, head over to {how_to_apply.mention} and follow the instructions. \n'
                 f'Let us know where you are from in in {self_roles.mention}. \n'
-                f'Feel free to introduce yourself in {general_chat.mention}. \n'
+                f'Feel free to introduce yourself in {introduce_yourself.mention}. \n'
+                f'You can start talking to us in {general_chat.mention}.\n'
                 f'\n'
                 f'If you have any questions feel free to ask our staff about it! \n'
                 f'We hope you will have a pleasant time on the server!')
@@ -248,8 +246,8 @@ async def online(ctx, server):
         if server + ':' in line:
             number = line[line.find('(') + 1:line.find(')')]
             players = info[pos + 1][4:]
-            result = f'```{number}\n' \
-                     f'{players}```'
+            result = f'```{number}\n'
+            result += f'{players}```' if int(number[0]) >= 1 else f'```'
             await ctx.send(result)
 
 

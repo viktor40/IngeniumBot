@@ -99,14 +99,18 @@ def display(sc, n):
     output += '-----{}-----\n'.format(sc)  # add a title to the list
 
     # enumerate over the data. We enumerate so we keep track of the number of values in the list
+    total = 0
     for i, stat_data in enumerate(stat_sorted):
         # output formatted as: playername + some amount of spaces so the amount of characters between the left
         # side and the number of the stat is always the same + the value
+        total += int(stat_data[1])
         output += '{}: {} {}\n'.format(stat_data[0].strip('"'), (20 - len(stat_data[0]))*' ', stat_data[1])
         if i + 1 == int(n):  # if the amount of players needed has been reached, i + 1 since i starts from 0
+            output += 'Total: {} {}\n'.format((20 - len('Total'))*' ', total)
             output += '```'  # end the code block
             return output  # return th output
 
+    output += 'Total: {} {}\n'.format((20 - len('Total')) * ' ', total)
     output += '```'  # end the code block
     return output  # return if all players have been iterated over
 

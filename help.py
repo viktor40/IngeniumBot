@@ -118,10 +118,10 @@ server_location_help = f'Get the coordinates of important locations.\n' \
                        f'sand farm new, ' \
                        f'witch farm, ' \
                        f'flower farm, ' \
-                       f'slime farm' \
-                       f'whiter killer\n' \
+                       f'slime farm, ' \
+                       f'wither killer\n' \
                        f'\n' \
-                       f'-----Mining locations-----' \
+                       f'-----Mining locations-----\n' \
                        f'gravel mining 1, ' \
                        f'gravel mining 2, ' \
                        f'gravel mining 3, ' \
