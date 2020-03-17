@@ -95,3 +95,4 @@ def info(name):
     for dc, mc in data:
         if name == dc or name == mc or name == dc[:-5]:
             return dc, mc
+    return False, False

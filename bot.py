@@ -20,6 +20,7 @@ from server_data import console_out
 from server_data import seed
 from server_data import server_locations
 from server_data import ips
+from server_data import servers
 
 # help info for help command imported from help.py
 from help import scoreboard_help
@@ -223,8 +224,11 @@ async def spawn_mob():
 @bot.command(name='ip', help=ip_help)
 @commands.has_any_role('Member', 'Trial Member')
 async def show_ip(ctx, server):
-    result = ips[server]
-    await ctx.send(f'`{result}`')
+    if server not in server:
+        await ctx.send('```css\n[This is not a valid server.]\n```')
+    else:
+        result = ips[server]
+        await ctx.send(f'`{result}`')
 
 
 # use the server locations from server_data.py to display the coordinates of a certain location
@@ -236,41 +240,50 @@ async def location(ctx, *locations):
         place += l + ' '
     place = place[:-1]
     place = place.replace('_', ' ')
-    result = server_locations[place.lower()]
-    await ctx.send(f'`{place.lower()} nether roof coordinates: {result}`')
+    if place not in server_locations:
+        await ctx.send('```css\n[This is not a valid location. See help locations for more information]\n```')
+    else:
+        result = server_locations[place.lower()]
+        await ctx.send(f'`{place.lower()} nether roof coordinates: {result}`')
 
 
 # write the server status to the channel
 @bot.command(name='status', help=status_help)
 @commands.has_any_role('Member', 'Trial Member')
 async def status(ctx, server):
-    cmd_out = subprocess.run(['mscs', 'status'], stdout=subprocess.PIPE)  # execute mscs status in linux console
-    decoded = cmd_out.stdout.decode('utf8')
-    info = decoded.split('\n')
-    for line in info:  # is server: is in the line
-        if server + ':' in line:  # then the status is in that line, so we just write that in chat
-            result = '```' + line[2:] + '```'  # add discord code block formatting
-            await ctx.send(result)
+    if server not in server:
+        await ctx.send('```css\n[This is not a valid server.]\n```')
+    else:
+        cmd_out = subprocess.run(['mscs', 'status'], stdout=subprocess.PIPE)  # execute mscs status in linux console
+        decoded = cmd_out.stdout.decode('utf8')
+        info = decoded.split('\n')
+        for line in info:  # is server: is in the line
+            if server + ':' in line:  # then the status is in that line, so we just write that in chat
+                result = '```' + line[2:] + '```'  # add discord code block formatting
+                await ctx.send(result)
 
 
 # show how many players are online and which players are online
 @bot.command(name='online', help=players_help)
 @commands.has_any_role('Member', 'Trial Member')
 async def online(ctx, server):
-    cmd_out = subprocess.run(['mscs', 'status'], stdout=subprocess.PIPE)  # execute mscs status in linux console
-    # get stdout from CompletedProcess class
-    # decode b string to utf8
-    decoded = cmd_out.stdout.decode('utf8')
-    info = decoded.split('\n')  # split into tuple on \n
-    for pos, line in enumerate(info):
-        if server + ':' in line:  # if the required server name followed by a colon
-            # get the players that are online -> is between ( )
-            number = line[line.find('(') + 1:line.find(')')]
-            # players that are online are in the next position in the iteration
-            players = info[pos + 1][4:]  # remove some redundant spaces
-            result = f'```{number}\n'
-            result += f'{players}```' if int(number[0]) >= 1 else f'```'
-            await ctx.send(result)
+    if server not in server:
+        await ctx.send('```css\n[This is not a valid server.]\n```')
+    else:
+        cmd_out = subprocess.run(['mscs', 'status'], stdout=subprocess.PIPE)  # execute mscs status in linux console
+        # get stdout from CompletedProcess class
+        # decode b string to utf8
+        decoded = cmd_out.stdout.decode('utf8')
+        info = decoded.split('\n')  # split into tuple on \n
+        for pos, line in enumerate(info):
+            if server + ':' in line:  # if the required server name followed by a colon
+                # get the players that are online -> is between ( )
+                number = line[line.find('(') + 1:line.find(')')]
+                # players that are online are in the next position in the iteration
+                players = info[pos + 1][4:]  # remove some redundant spaces
+                result = f'```{number}\n'
+                result += f'{players}```' if int(number[0]) >= 1 else f'```'
+                await ctx.send(result)
 
 
 # link the minecraft ign to the discord name
@@ -296,6 +309,10 @@ async def link_name(ctx, mc_name):
 @commands.has_any_role('Member', 'Trial Member')
 async def player_info(ctx, name):
     dc, mc = pd.info(name)
+    if not dc:
+        await ctx.send('```css\n[I\'m sorry but this user has not been found.] \n'
+                       '[This player either does not exist or has not linked their accounts.]\n```')
+
     # get play minutes and pick uses stats
     play_minutes = sc.player('play_minutes', mc)
     pick_uses = sc.player('pick_uses', mc)
@@ -313,14 +330,22 @@ async def player_info(ctx, name):
 @commands.has_any_role('Member', 'Trial Member')
 async def get_mcname(ctx, dc_name):
     dc, mc = pd.info(dc_name)
-    await ctx.send(f'```{dc} is {mc} in minecraft')
+    if not dc:  # error message in case of a wrong name
+        await ctx.send('```css\n[I\'m sorry but this user has not been found.] \n'
+                       '[This player either does not exist or has not linked their accounts.]\n```')
+    else:
+        await ctx.send(f'```{dc} is {mc} in minecraft```')
 
 
 @bot.command(name='get_dcname', help='show discord name by ign name')
 @commands.has_any_role('Member', 'Trial Member')
 async def get_dcname(ctx, mc_name):
     dc, mc = pd.info(mc_name)
-    await ctx.send(f'```{mc} is {dc} in minecraft')
+    if not dc:  # error message in case of a wrong name
+        await ctx.send('```css\n[I\'m sorry but this user has not been found.] \n'
+                       '[This player either does not exist or has not linked their accounts.]\n```')
+    else:
+        await ctx.send(f'```{mc} is {dc} in minecraft```')
 
 
 # commands only Owner and Staff can use

@@ -79,3 +79,5 @@ NBT_objectives = {'slime_peri': 'BlocksMinedPeri',
 
 objectives_m = ['distance_flown_m', 'distance_walked_m']
 objectives_km = ['distance_flown_km', 'distance_walked_km']
+
+servers = ['survival', 'creative', 'flatworld']
