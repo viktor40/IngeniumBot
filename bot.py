@@ -308,6 +308,12 @@ def chat_link():
         elif '[Server thread/INFO]' and '*' in line:
             if line[33] == '*':
                 return line
+        elif '[Server thread/INFO]' and 'joined the game' in line:
+            if line[33] == '*':
+                return line
+        elif '[Server thread/INFO]' and 'left the game' in line:
+            if line[33] == '*':
+                return line
     return
 
 
