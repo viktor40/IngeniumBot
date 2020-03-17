@@ -1,6 +1,8 @@
+# external libraries
 import nbtlib  # import module for nbt database handling
 import player_data  # import uuid_converter.py
 
+# server data
 from server_data import scoreboard_path
 
 

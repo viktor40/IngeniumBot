@@ -1,10 +1,12 @@
-import urllib
+# external libraries
+import urllib  # use urls
 from urllib.request import urlopen
 import json
 import re
 import numpy as np
 import time
 
+# server data
 from server_data import whitelist
 
 

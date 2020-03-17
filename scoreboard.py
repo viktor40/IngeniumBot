@@ -1,6 +1,9 @@
+# external libraries
 import json  # import module for json file handling
-import player_data  # import uuid_converter.py
 import math
+
+# scripts made to be used together with the bot
+import player_data
 import nbt
 
 # get the required data to execute the commands like the objectives and directories
