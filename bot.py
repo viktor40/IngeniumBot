@@ -1,14 +1,19 @@
+# external libraries and modules
 import os  # import module for directory management
 from dotenv import load_dotenv  # load module for usage of a .env file
 import subprocess  # import module used to do linux code execution
 from discord.ext import commands  # import the commands module from discord.py
+import concurrent.futures as features  # import concurrent.features for the executor for the chat link
 from discord.ext import tasks  # import  command module from discord.py
-import player_data as pd  # import the script to get player data
 import discord  # import discord.py module
+import columnize  # allow to format lists into strings with columns
+
+# scripts made to be used together with the bot
 import scoreboard as sc  # import scoreboard.py
 from filetail import FileTail  # import the script to tail files like in linux
-import concurrent.futures as features  # import concurrent.features for the executor for the chat link
+import player_data as pd  # import the script to get player data
 
+# server data imported from server_data.py
 from server_data import CHAT_LINK_CHANNEL
 from server_data import console_in
 from server_data import console_out
@@ -16,6 +21,7 @@ from server_data import seed
 from server_data import server_locations
 from server_data import ips
 
+# help info for help command imported from help.py
 from help import scoreboard_help
 from help import playerscore_help
 from help import ip_help
@@ -59,7 +65,7 @@ async def on_message(message):  # run when a message has been send
     for item in ('Stormloop', 'stormloop'):
         if item in message.content:
             """await will wait and trigger when only if the if statement is true"""
-            await message.channel.send('The biggest pimp ever', delete_after=60)  # delete the message after 60 sec
+            await message.channel.send('The biggest pimp ever', delete_after=20)  # delete the message after 60 sec
 
     # if the message contains 69 answer nice
     if '69' in message.content:
@@ -68,7 +74,7 @@ async def on_message(message):  # run when a message has been send
             pass
         else:
             response = 'Nice'
-            await message.channel.send(response)
+            await message.channel.send(response, delete_after=20)
 
     # if the message contains 420 answer Haha Weeeeeeed!
     if '420' in message.content:
@@ -77,7 +83,7 @@ async def on_message(message):  # run when a message has been send
             pass
         else:
             response = 'Haha Weeeeeeed!'
-            await message.channel.send(response)
+            await message.channel.send(response, delete_after=20)
 
     # pay respect when someone types F or f
     if message.content in ('F', 'f'):
@@ -87,7 +93,7 @@ async def on_message(message):  # run when a message has been send
     # respond to oof
     if message.content in ('Oof', 'oof'):
         response = 'Oof you done goofed!'
-        await message.channel.send(response)
+        await message.channel.send(response, delete_after=10)
 
     # respond to happy birthday
     if 'happy birthday' in message.content or 'Happy Birthday' in message.content:
@@ -98,15 +104,24 @@ async def on_message(message):  # run when a message has been send
         response = 'Mango, Mango, Mango mango mango, Mangooooooooooooooooooooooooooooooooooooooooooo'
         await message.channel.send(response, delete_after=30)
 
-    if 'stop lazy' or 'Stop lazy' in message.content:
+    if 'stop lazy' in message.content:
         response = 'stop being lazy prick'
         await message.channel.send(response, delete_after=35)
 
-    if message.channel.id == CHAT_LINK_CHANNEL:
+    if 'stop lazy' in message.content:
+        response = 'stop being lazy prick'
+        await message.channel.send(response, delete_after=35)
+
+    # chat link code
+    if message.channel.id == CHAT_LINK_CHANNEL:  # only send messages sent in the chat link channel
+        # get both the content of the message as well as it's author
         msg = message.content
         sender = message.author
-        if not msg.startswith('ig '):
-            with open(console_in, 'w') as f:
+        if not msg.startswith('ig ') and not msg.startswith('Ig '):  # ignore bot commands
+            with open(console_in, 'w') as f:  # open console file to write the command
+                # use the tellraw command to send messages in chat
+                # begin the message by <dc.sender> to show who sent the message
+                # also remove #xxxx from the senders discord tag
                 f.writelines('tellraw @a [\"dc: <{}> {}\"]\n'.format(str(sender)[:-5], str(msg)))
                 f.close()
                 await bot.process_commands(message)
@@ -147,6 +162,8 @@ async def test_bot(ctx):
     await ctx.send(response)
 
 
+# display a scoreboard of an objective with the first number amount of players
+# if number is not given, then all will be displayed
 @bot.command(name='scoreboard', help=scoreboard_help)
 async def scoreboard(ctx, objective, number=''):
     result = sc.display(objective, number)  # get result from the scoreboard display function
@@ -156,10 +173,13 @@ async def scoreboard(ctx, objective, number=''):
 # command to fetch scoreboard data of a single player and a single scoreboard
 @bot.command(name='playerscore', help=playerscore_help)
 async def playerscore(ctx, objective, player):
-    result = sc.player(objective, player)
-    await ctx.send(result)
+    data = sc.player(objective, player)
+    if data != 'unknown':
+        result = f'```{player}: {objective} = {data}```'
+        await ctx.send(result)
 
 
+# display the world seed
 @bot.command(name='seed', help='Display the server\'s seed')
 async def show_seed(ctx):
     result = seed
@@ -172,10 +192,22 @@ async def ow2n(ctx, x, z):
     await ctx.send(f'`{x}, {z} -> {round(int(x) / 8)}, {round(int(z) / 8)}`')
 
 
-# multiply by 8
+# multiply coords by 8
 @bot.command(name='nether2ow', help='Convert nether coordinates to overworld coordinates.')
 async def n2ow(ctx, x, z):
     await ctx.send(f'`{x}, {z} -> {round(int(x) * 8)}, {round(int(z) * 8)}`')
+
+
+# commands only Members, Trial members and Friends can use
+@bot.command(name='whitelist', help='Show the list of all whitelisted players.')
+@commands.has_any_role('Member', 'Trial Member', 'Friends')
+async def whitelist(ctx):
+    players = sorted(pd.players())
+    result = '```'
+    for p in players:
+        result += p + (20 - len(p)) * ' ' + ' | '
+    result += '```'
+    await ctx.send(result)
 
 
 # commands only Members and Trial Member can use
@@ -187,6 +219,7 @@ async def spawn_mob():
         f.close()
 
 
+# get th ip of a server
 @bot.command(name='ip', help=ip_help)
 @commands.has_any_role('Member', 'Trial Member')
 async def show_ip(ctx, server):
@@ -194,6 +227,7 @@ async def show_ip(ctx, server):
     await ctx.send(f'`{result}`')
 
 
+# use the server locations from server_data.py to display the coordinates of a certain location
 @bot.command(name='location', help=server_location_help)
 @commands.has_any_role('Member', 'Trial Member')
 async def location(ctx, *locations):
@@ -204,21 +238,6 @@ async def location(ctx, *locations):
     place = place.replace('_', ' ')
     result = server_locations[place.lower()]
     await ctx.send(f'`{place.lower()} nether roof coordinates: {result}`')
-
-
-# link the minecraft ign to the discord name
-# pass_context makes sure we can read info like message sender and more
-@bot.command(name='link_name', help='link minecraft ign to discord screen name', pass_context=True)
-@commands.has_any_role('Member', 'Trial Member')
-async def link_name(ctx, mc_name):
-    dc_name = ctx.author  # the discord name is the name of the author of the message
-    pd.link_dc_ign(mc_name, dc_name)
-    """print the result and format it"""
-    result = f'```\n' \
-             f'discord name: {dc_name}\n' \
-             f'minecraft ign: {mc_name}\n' \
-             f'```'
-    await ctx.send(result)
 
 
 # write the server status to the channel
@@ -243,22 +262,58 @@ async def online(ctx, server):
     decoded = cmd_out.stdout.decode('utf8')
     info = decoded.split('\n')  # split into tuple on \n
     for pos, line in enumerate(info):
-        if server + ':' in line:
+        if server + ':' in line:  # if the required server name followed by a colon
+            # get the players that are online -> is between ( )
             number = line[line.find('(') + 1:line.find(')')]
-            players = info[pos + 1][4:]
+            # players that are online are in the next position in the iteration
+            players = info[pos + 1][4:]  # remove some redundant spaces
             result = f'```{number}\n'
             result += f'{players}```' if int(number[0]) >= 1 else f'```'
             await ctx.send(result)
 
 
-@bot.command(name='get_mcname', help='show ign by discord name', pass_context=True)
+# link the minecraft ign to the discord name
+# pass_context makes sure we can read info like message sender and more
+@bot.command(name='link_name', help='link minecraft ign to discord screen name', pass_context=True)
+@commands.has_any_role('Member', 'Trial Member')
+async def link_name(ctx, mc_name):
+    dc_name = ctx.author  # the discord name is the name of the author of the message
+    link = pd.link_dc_ign(mc_name, dc_name)  # write both names in the file where it's stored
+    """print the result and format it"""
+    # send a message to let people know if it was successful or not
+    await ctx.send('```' + link + '```')
+    if link == 'Your name has been registered successfully!':
+        result = f'```\n' \
+             f'discord name: {dc_name}\n' \
+             f'minecraft ign: {mc_name}\n' \
+             f'```'
+        await ctx.send(result)
+
+
+# display the player info of whitelisted players
+@bot.command(name='player_info', help='Get someones player name, discord name and basic server stats.')
+@commands.has_any_role('Member', 'Trial Member')
+async def player_info(ctx, name):
+    dc, mc = pd.info(name)
+    # get play minutes and pick uses stats
+    play_minutes = sc.player('play_minutes', mc)
+    pick_uses = sc.player('pick_uses', mc)
+    # format them in 4 rows, discord name, mc ign, play minutes & pick uses
+    result = f'Discord name:   {dc}\n' \
+             f'Minecraft ign:  {mc}\n' \
+             f'Play minutes:   {play_minutes}\n' \
+             f'Blocks mined:   {pick_uses}'
+    await ctx.send('```' + result + '```')
+
+
+@bot.command(name='get_mcname', help='show ign by discord name')
 @commands.has_any_role('Member', 'Trial Member')
 async def get_mcname(ctx, dc_name):
     result = 'This command doesn\'t work yet'
-    await ctx.send(result)
+    await ctx.send('```' + result + '```')
 
 
-@bot.command(name='get_dcname', help='show ign by discord name', pass_context=True)
+@bot.command(name='get_dcname', help='show ign by discord name')
 @commands.has_any_role('Member', 'Trial Member')
 async def get_dcname(ctx, mc_name):
     result = 'This command doesn\'t work yet'
@@ -302,17 +357,14 @@ async def shell_command(ctx, *cmd):
 def chat_link():
     tail = FileTail(console_out)  # tail the console.out file
     for line in tail:
-        if '[Server thread/INFO]' and '<' and '>' in line:  # check if the message was in fact sent by a player
-            if line[33] == '<':
+        if '[Server thread/INFO]' in line:  # check if the new line was of the correct type
+            if line[33] == '<' and '>' in line:  # check if the the message was sent by a player i.e. <player>
                 return line
-        elif '[Server thread/INFO]' and '*' in line:
-            if line[33] == '*':
+            elif line[33] == '*':  # to also send messages generated by \me
                 return line
-        elif '[Server thread/INFO]' and 'joined the game' in line:
-            if line[33] == '*':
+            elif 'joined the game' in line:  # sent player join messages
                 return line
-        elif '[Server thread/INFO]' and 'left the game' in line:
-            if line[33] == '*':
+            elif 'left the game' in line:  # sent player leave messages
                 return line
     return
 

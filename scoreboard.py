@@ -28,15 +28,15 @@ def check_type(objective):
         return
 
 
-def get_json_stat(directory, sub_type, objective, sc, id):
+def get_json_stat(sub_type, objective, sc, id):
     # open the stat file corresponding to the uuid in the directory
-    with open(f'{directory}/{id}.json') as f:
+    with open(f'{stat_directory}/{id}.json') as f:
         # load the JSON file
         data = json.load(f)
-        # get to the right branch in the JSON tree
+    # get to the right branch in the JSON tree
     data = data.get('stats').get(sub_type)[objective]
 
-    # do some value conversions
+    # do some value conversions i.e. m to km, ticks to minutes etc.
     if sc == 'play_minutes':
         data = math.floor(int(data) / (20 * 60))
     elif sc in objectives_m:
@@ -57,10 +57,8 @@ def display(sc, n):
     elif int(n) <= 0:  # if the amount of players required is smaller or equal than 0 do nothing and stop the command
         return
 
-    # fetch the info about the objective required to get
+    # fetch the info about the objective you want to get
     objective, sub_type, datatype = check_type(sc)
-
-    # set the directory of the stat files
     stat = []
 
     # go through the dictionary and get the uuid and playername
@@ -70,12 +68,12 @@ def display(sc, n):
 
         for id, playername in mapped_uuid.items():
             try:
-                data = get_json_stat(stat_directory, sub_type, objective, sc, id)
+                data = get_json_stat(sub_type, objective, sc, id)
                 if int(data) > 0:
                     # add to the list containing the playername and score
                     stat.append((playername, data))
 
-            except FileNotFoundError:  # if the file is not found, do nothing
+            except FileNotFoundError:  # if the file is not found
                 pass
             except KeyError:  # if the player does not have a statistic for the objective
                 pass
@@ -118,17 +116,16 @@ def display(sc, n):
 def player(sc, ign):
     # fetch the info about the objective required to get
     objective, sub_type, datatype = check_type(sc)
-    directory = stat_directory
     players = player_data.generate()
 
     for uuid, name in players.items():
         if ign == name:
-            id = uuid
+            idd = uuid
 
     if datatype == 'JSON':
         try:
-            data = get_json_stat(directory, sub_type, objective, sc, id)
-            return f'```{ign}: {sc} = {data}```'
+            data = get_json_stat(sub_type, objective, sc, idd)
+            return data
 
         except FileNotFoundError:  # if the file is not found, do nothing
             pass
@@ -140,7 +137,7 @@ def player(sc, ign):
     # if it's a custom command load the values from the NBT data by use of the NBT module
     elif datatype == 'NBT':
         data = nbt.get_single_scpore(objective, ign)
-        return f'```{ign}: {sc} = {data}```'
+        return data
 
-    else:  # return nothing if the command is unknown
-        return
+    else:  # return unknown if the scoreboard is unknown
+        return 'unknown'
