@@ -251,7 +251,7 @@ async def location(ctx, *locations):
 @bot.command(name='status', help=status_help)
 @commands.has_any_role('Member', 'Trial Member')
 async def status(ctx, server):
-    if server not in server:
+    if server not in servers:
         await ctx.send('```css\n[This is not a valid server.]\n```')
     else:
         cmd_out = subprocess.run(['mscs', 'status'], stdout=subprocess.PIPE)  # execute mscs status in linux console
@@ -267,7 +267,7 @@ async def status(ctx, server):
 @bot.command(name='online', help=players_help)
 @commands.has_any_role('Member', 'Trial Member')
 async def online(ctx, server):
-    if server not in server:
+    if server not in servers:
         await ctx.send('```css\n[This is not a valid server.]\n```')
     else:
         cmd_out = subprocess.run(['mscs', 'status'], stdout=subprocess.PIPE)  # execute mscs status in linux console
