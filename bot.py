@@ -168,16 +168,25 @@ async def test_bot(ctx):
 @bot.command(name='scoreboard', help=scoreboard_help)
 async def scoreboard(ctx, objective, number=''):
     result = sc.display(objective, number)  # get result from the scoreboard display function
-    await ctx.send(result)
+    if result != 'unknown':
+        await ctx.send(result)
+    else:
+        await ctx.send('```css\n[I\'m sorry but this is not a valid objective.] \n'
+                       '[check help playerscore to see a list of valid objectives]\n```')
 
 
 # command to fetch scoreboard data of a single player and a single scoreboard
 @bot.command(name='playerscore', help=playerscore_help)
 async def playerscore(ctx, objective, player):
+    if player not in pd.players():
+        await ctx.send('```css\n[I\'m sorry but this user has not been found.]```')
     data = sc.player(objective, player)
     if data != 'unknown':
         result = f'```{player}: {objective} = {data}```'
         await ctx.send(result)
+    else:
+        await ctx.send('```css\n[I\'m sorry but this is not a valid objective.] \n'
+                       '[check help playerscore to see a list of valid objectives]\n```')
 
 
 # display the world seed
@@ -224,8 +233,8 @@ async def spawn_mob():
 @bot.command(name='ip', help=ip_help)
 @commands.has_any_role('Member', 'Trial Member')
 async def show_ip(ctx, server):
-    if server not in server:
-        await ctx.send('```css\n[This is not a valid server.]\n```')
+    if server not in servers:
+        await ctx.send('```css\n[This is not a valid server. Check the valid servers in ip help]\n```')
     else:
         result = ips[server]
         await ctx.send(f'`{result}`')
@@ -252,7 +261,7 @@ async def location(ctx, *locations):
 @commands.has_any_role('Member', 'Trial Member')
 async def status(ctx, server):
     if server not in servers:
-        await ctx.send('```css\n[This is not a valid server.]\n```')
+        await ctx.send('```css\n[This is not a valid server. Check the valid servers in ip help]\n```')
     else:
         cmd_out = subprocess.run(['mscs', 'status'], stdout=subprocess.PIPE)  # execute mscs status in linux console
         decoded = cmd_out.stdout.decode('utf8')
@@ -268,7 +277,7 @@ async def status(ctx, server):
 @commands.has_any_role('Member', 'Trial Member')
 async def online(ctx, server):
     if server not in servers:
-        await ctx.send('```css\n[This is not a valid server.]\n```')
+        await ctx.send('```css\n[This is not a valid server. Check the valid servers in ip help]\n```')
     else:
         cmd_out = subprocess.run(['mscs', 'status'], stdout=subprocess.PIPE)  # execute mscs status in linux console
         # get stdout from CompletedProcess class

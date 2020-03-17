@@ -26,7 +26,7 @@ def check_type(objective):
         datatype, sub_type = 'NBT', None
         return objective, sub_type, datatype
     else:
-        return
+        return 'unknown', 'unknown', 'unknown'
 
 
 def get_json_stat(sub_type, objective, sc, id):
@@ -92,7 +92,7 @@ def display(sc, n):
             else:
                 stat.append(tuple(i))
     else:  # return nothing if the command is unknown
-        return
+        return 'unknown'
 
     # sort the stat list from low to high and reverse the list
     stat_sorted = sorted(stat, key=lambda tup: tup[1])[::-1]
