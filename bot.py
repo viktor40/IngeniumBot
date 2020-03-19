@@ -21,6 +21,7 @@ from server_data import seed
 from server_data import server_locations
 from server_data import ips
 from server_data import servers
+from server_data import death_messages
 
 # help info for help command imported from help.py
 from help import scoreboard_help
@@ -403,6 +404,14 @@ def chat_link():
                 return line
             elif 'left the game' in line:  # sent player leave messages
                 return line
+
+            # if the message wasn't yet recognised as a valid message it could still be a death message
+            # to check for death messages we check if a death message is in the line by looping over
+            # the list with death messages and checking if they are in the line
+            # ignore some annoying console messages when villagers die
+            for i in death_messages:
+                if i in line and 'Villager class' not in line:
+                    return line
     return
 
 
