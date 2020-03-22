@@ -116,6 +116,7 @@ server_location_help = f'Get the coordinates of important locations.\n' \
                        f'gold farm, ' \
                        f'sand farm old, ' \
                        f'sand farm new, ' \
+                       f'gravel farm, ' \
                        f'witch farm, ' \
                        f'flower farm, ' \
                        f'slime farm, ' \

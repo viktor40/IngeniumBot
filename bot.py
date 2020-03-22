@@ -6,7 +6,7 @@ from discord.ext import commands  # import the commands module from discord.py
 import concurrent.futures as features  # import concurrent.features for the executor for the chat link
 from discord.ext import tasks  # import  command module from discord.py
 import discord  # import discord.py module
-import columnize  # allow to format lists into strings with columns
+import asyncio
 
 # scripts made to be used together with the bot
 import scoreboard as sc  # import scoreboard.py
@@ -390,6 +390,21 @@ async def shell_command(ctx, *cmd):
     result = '```' + cmd.stdout.decode('utf8') + '```'
     await ctx.send(result)
 
+"""
+@tasks.loop(minutes=1)
+async def give_ranks():
+    await bot.wait_until_ready()  # await until the bot is ready
+    TEST_CHANNEL = 611188555447926784
+    send_channel = bot.get_channel(TEST_CHANNEL)  # specify the chat link discord channel
+    test = 'test'
+    print('test1')
+    with features.ThreadPoolExecutor() as pool:  # run a thread pool executor
+        print('test2')
+        while True:  # while true -> always
+            print('test3')
+            line = await bot.loop.run_in_executor(pool, auto_rank())  # run chat_link in executor
+    await send_channel.send(test)  # send the output to chat without timestamp and console msg type"""
+
 
 # chat link blocking code
 def chat_link():
@@ -425,5 +440,6 @@ async def link_async_func():
             await send_channel.send(line[33:])  # send the output to chat without timestamp and console msg type
 
 
+# give_ranks.start()
 bot.loop.create_task(link_async_func())  # run the loop for the chat link
 bot.run(token)  # run the loop for the bot

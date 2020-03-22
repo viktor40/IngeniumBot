@@ -3,7 +3,7 @@ CHAT_LINK_CHANNEL = 688125129456484366
 seed = '-8558479263656096884'
 
 ips = {'survival': '158.69.122.191',
-       'creative': '158.69.122.191:25564',
+       'creative': '158.69.122.191:25568',
        'flatworld': '158.69.122.191:25567',
        'flatworld2': '109.247.2.239',
        'test': '158.69.122.191:25575'}
@@ -30,7 +30,8 @@ server_locations = {'spawn': '1, 1',
                     'diamond mining south entrance': '353, -1496',
                     'diamond mining north end portal': '470, -1673',
                     'diamond mining south end portal': '250, -1330',
-                    'wither killer': '51, 26'}
+                    'wither killer': '51, 26',
+                    'gravel farm': '-1201, 1809'}
 
 whitelist = '../mscs/worlds/survival/whitelist.json'
 scoreboard_path = '../mscs/worlds/survival/survival/data/scoreboard.dat'
