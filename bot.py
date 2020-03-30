@@ -377,6 +377,7 @@ async def get_dcname(ctx, mc_name):
         await ctx.send(f'```{mc} is {dc} in minecraft```')
 
 
+# give members the ability to start the server from discord
 @bot.command(name='start', help=start_help)
 @commands.has_any_role('Member', 'Trial Member')
 async def start(ctx, server):
