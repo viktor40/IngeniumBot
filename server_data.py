@@ -34,11 +34,12 @@ server_locations = {'spawn': '1, 1',
                     'gravel farm': '-1201, 1809'}
 
 whitelist = '../mscs/worlds/survival/whitelist.json'
+
 scoreboard_path = '../mscs/worlds/survival/survival/data/scoreboard.dat'
 stat_directory = '../mscs/worlds/survival/survival/stats'
 
-console_in = "../mscs/worlds/survival/console.in"
-console_out = "../mscs/worlds/survival/console.out"
+console_in = "../mscs/worlds/{}/console.in"
+console_out = "../mscs/worlds/{}/console.out"
 
 # map the commands to the  JSON file stat.json containing the built in scoreboards
 JSON_objectives = {'play_minutes': ('minecraft:play_one_minute', 'minecraft:custom'),
@@ -62,6 +63,7 @@ JSON_objectives = {'play_minutes': ('minecraft:play_one_minute', 'minecraft:cust
                    'stone_placed': ('minecraft:stone', 'minecraft:used'),
                    'grass_placed': ('minecraft:grass_block', 'minecraft:used'),
                    'rails_placed': ('minecraft:rail', 'minecraft:used'),
+                   'dragon_egg_placed': ('minecraft:dragon_egg', 'minecraft:used'),
 
                    'redstone_torches_crafted': ('minecraft:redstone_torch', 'minecraft:crafted'),
                    'repeaters_crafted': ('minecraft:repeater', 'minecraft:crafted'),
@@ -98,3 +100,7 @@ death_messages = ['was shot by arrow', 'was shot by ', 'was pricked to death', '
                   'was killed by magic', 'was killed by', 'starved to death', 'Suffocation', 'suffocated in a wall',
                   'was squished too much', 'was killed while trying to hurt', 'fell out of the world',
                   'fell from a high place and fell out of the world', 'withered away', 'was pummeled by', 'died']
+
+server_mappings = {'CMP': 'creative',
+                   'SMP': 'survival',
+                   'FMP': 'flatworld'}

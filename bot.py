@@ -22,6 +22,7 @@ from server_data import server_locations
 from server_data import ips
 from server_data import servers
 from server_data import death_messages
+from server_data import server_mappings
 
 # help info for help command imported from help.py
 from help import scoreboard_help
@@ -32,6 +33,7 @@ from help import status_help
 from help import players_help
 from help import mscs_help
 from help import shell_help
+from help import start_help
 
 bot = commands.Bot(command_prefix=('ig ', 'Ig '))  # set the command prefix
 
@@ -120,11 +122,28 @@ async def on_message(message):  # run when a message has been send
         msg = message.content
         sender = message.author
         if not msg.startswith('ig ') and not msg.startswith('Ig '):  # ignore bot commands
-            with open(console_in, 'w') as f:  # open console file to write the command
+            with open(console_in.format('survival'), 'w') as f:  # open console file to write the command
                 # use the tellraw command to send messages in chat
                 # begin the message by <dc.sender> to show who sent the message
                 # also remove #xxxx from the senders discord tag
-                f.writelines('tellraw @a [\"dc: <{}> {}\"]\n'.format(str(sender)[:-5], str(msg)))
+                # /tellraw @a [{\"text\":\"[Discord] \", \"color\":\"aqua\"}, {"text":"<Viktorvn40> something something", "color":"white"}]
+                a = 'tellraw @a [{\"text\":\"[Discord] \", \"color\":\"blue\"}, {\"text\":'
+                b = '\"<{}> {}\", \"color\":\"white\"'.format(str(sender)[:-5], str(msg)) + '}]\n'
+                f.writelines(a + b)
+                f.close()
+                await bot.process_commands(message)
+
+            with open(console_in.format('creative'), 'w') as f:
+                a = 'tellraw @a [{\"text\":\"[Discord] \", \"color\":\"blue\"}, {\"text\":'
+                b = '\"<{}> {}\", \"color\":\"white\"'.format(str(sender)[:-5], str(msg)) + '}]\n'
+                f.writelines(a + b)
+                f.close()
+                await bot.process_commands(message)
+
+            with open(console_in.format('flatworld'), 'w') as f:
+                a = 'tellraw @a [{\"text\":\"[Discord] \", \"color\":\"blue\"}, {\"text\":'
+                b = '\"<{}> {}\", \"color\":\"white\"'.format(str(sender)[:-5], str(msg)) + '}]\n'
+                f.writelines(a + b)
                 f.close()
                 await bot.process_commands(message)
 
@@ -358,6 +377,17 @@ async def get_dcname(ctx, mc_name):
         await ctx.send(f'```{mc} is {dc} in minecraft```')
 
 
+@bot.command(name='start', help=start_help)
+@commands.has_any_role('Member', 'Trial Member')
+async def start(ctx, server):
+    if server not in servers:
+        await ctx.send('```css\n[This is not a valid server. Check the valid servers in help start]\n```')
+    else:
+        cmd = subprocess.run(['mscs'] + ['start'] + [server], stdout=subprocess.PIPE)  # start the server
+        result = '```' + cmd.stdout.decode('utf8') + '```'
+        await ctx.send(result)
+
+
 # commands only Owner and Staff can use
 # Staff and Owner can send commands via discord chat to the minecraft server
 @bot.command(name='command', help='send any command to the server through discord')
@@ -390,6 +420,8 @@ async def shell_command(ctx, *cmd):
     result = '```' + cmd.stdout.decode('utf8') + '```'
     await ctx.send(result)
 
+
+# setup to give players their rank automatically
 """
 @tasks.loop(minutes=1)
 async def give_ranks():
@@ -403,21 +435,43 @@ async def give_ranks():
         while True:  # while true -> always
             print('test3')
             line = await bot.loop.run_in_executor(pool, auto_rank())  # run chat_link in executor
-    await send_channel.send(test)  # send the output to chat without timestamp and console msg type"""
+    await send_channel.send(test)  # send the output to chat without timestamp and console msg type
+"""
 
 
+# send a formatted text across all servers
+# tellraw uses the correct colour and the correct format for the output file is gotten via server mappings
+def server_link(line, server1, server2, server):
+
+    msg = 'tellraw @a [{\"text\":\"[{}] \"'.format(server) + ', \"color\":\"yellow\"}, {\"text\":' \
+        + '\"{}\", \"color\":\"white\"'.format(line[33:-1]) + '}]\n'
+
+    with open(console_in.format(server_mappings[server1]), 'w') as f:
+        f.writelines(msg)
+        f.close()
+
+    with open(console_in.format(server_mappings[server2]), 'w') as g:
+        g.writelines(msg)
+        g.close()
+
+
+# SMP
 # chat link blocking code
-def chat_link():
-    tail = FileTail(console_out)  # tail the console.out file
+def chat_link_SMP():
+    tail = FileTail(console_out.format('survival'))  # tail the console.out file
     for line in tail:
         if '[Server thread/INFO]' in line:  # check if the new line was of the correct type
             if line[33] == '<' and '>' in line:  # check if the the message was sent by a player i.e. <player>
+                server_link(line, 'CMP', 'FMP', 'SMP')
                 return line
             elif line[33] == '*':  # to also send messages generated by \me
+                server_link(line, 'CMP', 'FMP', 'SMP')
                 return line
             elif 'joined the game' in line:  # sent player join messages
+                server_link(line, 'CMP', 'FMP', 'SMP')
                 return line
             elif 'left the game' in line:  # sent player leave messages
+                server_link(line, 'CMP', 'FMP', 'SMP')
                 return line
 
             # if the message wasn't yet recognised as a valid message it could still be a death message
@@ -426,20 +480,106 @@ def chat_link():
             # ignore some annoying console messages when villagers die
             for i in death_messages:
                 if i in line and 'Villager class' not in line:
+                    server_link(line, 'CMP', 'FMP', 'SMP')
                     return line
     return
 
 
 # chat link async function ran in executor
-async def link_async_func():
+async def link_async_func_SMP():
     await bot.wait_until_ready()  # await until the bot is ready
     send_channel = bot.get_channel(CHAT_LINK_CHANNEL)  # specify the chat link discord channel
     with features.ThreadPoolExecutor() as pool:  # run a thread pool executor
         while True:  # while true -> always
-            line = await bot.loop.run_in_executor(pool, chat_link)  # run chat_link in executor
-            await send_channel.send(line[33:])  # send the output to chat without timestamp and console msg type
+            line = await bot.loop.run_in_executor(pool, chat_link_SMP)  # run chat_link in executor
+            if 'tellraw' not in line:
+                await send_channel.send('**[SMP]** ' + line[33:])
+
+
+# CMP
+# chat link blocking code
+def chat_link_CMP():
+    tail = FileTail(console_out.format('creative'))  # tail the console.out file
+    for line in tail:
+        if '[Server thread/INFO]' in line:  # check if the new line was of the correct type
+            if line[33] == '<' and '>' in line:  # check if the the message was sent by a player i.e. <player>
+                server_link(line, 'SMP', 'FMP', 'CMP')
+                return line
+            elif line[33] == '*':  # to also send messages generated by \me
+                server_link(line, 'SMP', 'FMP', 'CMP')
+                return line
+            elif 'joined the game' in line:  # sent player join messages
+                server_link(line, 'SMP', 'FMP', 'CMP')
+                return line
+            elif 'left the game' in line:  # sent player leave messages
+                server_link(line, 'SMP', 'FMP', 'CMP')
+                return line
+
+            # if the message wasn't yet recognised as a valid message it could still be a death message
+            # to check for death messages we check if a death message is in the line by looping over
+            # the list with death messages and checking if they are in the line
+            # ignore some annoying console messages when villagers die
+            for i in death_messages:
+                if i in line and 'Villager class' not in line:
+                    server_link(line, 'SMP', 'FMP', 'CMP')
+                    return line
+    return
+
+
+# chat link async function ran in executor
+async def link_async_func_CMP():
+    await bot.wait_until_ready()  # await until the bot is ready
+    send_channel = bot.get_channel(CHAT_LINK_CHANNEL)  # specify the chat link discord channel
+    with features.ThreadPoolExecutor() as pool:  # run a thread pool executor
+        while True:  # while true -> always
+            line = await bot.loop.run_in_executor(pool, chat_link_CMP)  # run chat_link in executor
+            if 'tellraw' not in line:
+                await send_channel.send('**[CMP]** ' + line[33:])
+
+
+# FMP
+# chat link blocking code
+def chat_link_FMP():
+    tail = FileTail(console_out.format('flatworld'))  # tail the console.out file
+    for line in tail:
+        if '[Server thread/INFO]' in line:  # check if the new line was of the correct type
+            if line[33] == '<' and '>' in line:  # check if the the message was sent by a player i.e. <player>
+                server_link(line, 'CMP', 'SMP', 'FMP')
+                return line
+            elif line[33] == '*':  # to also send messages generated by \me
+                server_link(line, 'CMP', 'SMP', 'FMP')
+                return line
+            elif 'joined the game' in line:  # sent player join messages
+                server_link(line, 'CMP', 'SMP', 'FMP')
+                return line
+            elif 'left the game' in line:  # sent player leave messages
+                server_link(line, 'CMP', 'SMP', 'FMP')
+                return line
+
+            # if the message wasn't yet recognised as a valid message it could still be a death message
+            # to check for death messages we check if a death message is in the line by looping over
+            # the list with death messages and checking if they are in the line
+            # ignore some annoying console messages when villagers die
+            for i in death_messages:
+                if i in line and 'Villager class' not in line:
+                    server_link(line, 'CMP', 'SMP', 'FMP')
+                    return line
+    return
+
+
+# chat link async function ran in executor
+async def link_async_func_FMP():
+    await bot.wait_until_ready()  # await until the bot is ready
+    send_channel = bot.get_channel(CHAT_LINK_CHANNEL)  # specify the chat link discord channel
+    with features.ThreadPoolExecutor() as pool:  # run a thread pool executor
+        while True:  # while true -> always
+            line = await bot.loop.run_in_executor(pool, chat_link_FMP)  # run chat_link in executor
+            if 'tellraw' not in line:
+                await send_channel.send('**[FMP]** ' + line[33:])
 
 
 # give_ranks.start()
-bot.loop.create_task(link_async_func())  # run the loop for the chat link
+bot.loop.create_task(link_async_func_SMP())  # run the loop for the chat link
+bot.loop.create_task(link_async_func_CMP())  # run the loop for the chat link
+bot.loop.create_task(link_async_func_FMP())  # run the loop for the chat link
 bot.run(token)  # run the loop for the bot

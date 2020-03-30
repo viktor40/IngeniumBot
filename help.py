@@ -156,3 +156,6 @@ mscs_help = f'Execute any mscs command on the server itself. \n' \
 shell_help = f'Only use this when you know what you\'re doing.\n' \
              f'This command allows you to run any shell command onto the server and get it\'s result.\n' \
              f'Although in general, you shouldn\'t use this.'
+
+start_help = f'Restart the server if it has crashed.\n' \
+             f'available servers to restart are: survival, creative and flatworld.'

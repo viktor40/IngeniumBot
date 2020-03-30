@@ -142,7 +142,7 @@ def player(sc, ign):
 
     # if it's a custom command load the values from the NBT data by use of the NBT module
     elif datatype == 'NBT':
-        data = nbt.get_single_scpore(objective, ign)
+        data = nbt.get_single_score(objective, ign)
         return data
 
     else:  # return unknown if the scoreboard is unknown

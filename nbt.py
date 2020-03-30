@@ -18,7 +18,7 @@ def get_score(objective):
     return scoreboard
 
 
-def get_single_scpore(objective, player):
+def get_single_score(objective, player):
     nbt_file = nbtlib.load(scoreboard_path)  # load the nbt data
     root = nbt_file.root['data']['PlayerScores']  # get to the correct branch: data -> playerscores
     white_players = player_data.players('whitelist.json')  # load a list of all whitelisted playes from uuid
