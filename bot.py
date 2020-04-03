@@ -443,7 +443,7 @@ async def link_async_func_SMP():
     send_channel = bot.get_channel(CHAT_LINK_CHANNEL)  # specify the chat link discord channel
     with features.ThreadPoolExecutor() as pool:  # run a thread pool executor
         while True:  # while true -> always
-            line = await bot.loop.run_in_executor(pool, cl.chat_link_SMP)  # run chat_link in executor
+            line = await bot.loop.run_in_executor(pool, cl.SMP)  # run chat_link in executor
             if 'tellraw' not in line:
                 await send_channel.send('**[SMP]** ' + line[33:])
 
@@ -454,7 +454,7 @@ async def link_async_func_CMP():
     send_channel = bot.get_channel(CHAT_LINK_CHANNEL)  # specify the chat link discord channel
     with features.ThreadPoolExecutor() as pool:  # run a thread pool executor
         while True:  # while true -> always
-            line = await bot.loop.run_in_executor(pool, cl.chat_link_CMP)  # run chat_link in executor
+            line = await bot.loop.run_in_executor(pool, cl.CMP)  # run chat_link in executor
             if 'tellraw' not in line:
                 await send_channel.send('**[CMP]** ' + line[33:])
 
@@ -465,7 +465,7 @@ async def link_async_func_FMP():
     send_channel = bot.get_channel(CHAT_LINK_CHANNEL)  # specify the chat link discord channel
     with features.ThreadPoolExecutor() as pool:  # run a thread pool executor
         while True:  # while true -> always
-            line = await bot.loop.run_in_executor(pool, cl.chat_link_FMP())  # run chat_link in executor
+            line = await bot.loop.run_in_executor(pool, cl.FMP())  # run chat_link in executor
             if 'tellraw' not in line:
                 await send_channel.send('**[FMP]** ' + line[33:])
 

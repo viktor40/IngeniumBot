@@ -18,9 +18,8 @@ def server_link(line, server):
 
 # survival
 # chat link blocking code
-def chat_link_SMP():
-    tail = FileTail(console_out.format('survival'))  # tail the console.out file
-    server = 'SMP'
+def chat_link(server):
+    tail = FileTail(console_out.format(server_mappings[server]))  # tail the console.out file
     for line in tail:
         if '[Server thread/INFO]' in line:  # check if the new line was of the correct type
             if line[33] == '<' and '>' in line:  # check if the the message was sent by a player i.e. <player>
@@ -47,53 +46,13 @@ def chat_link_SMP():
     return
 
 
-# creative
-def chat_link_CMP():
-    tail = FileTail(console_out.format('creative'))
-    server = 'CMP'
-    for line in tail:
-        if '[Server thread/INFO]' in line:
-            if line[33] == '<' and '>' in line:
-                server_link(line, server)
-                return line
-            elif line[33] == '*':
-                server_link(line, server)
-                return line
-            elif 'joined the game' in line:
-                server_link(line, server)
-                return line
-            elif 'left the game' in line:
-                server_link(line, server)
-                return line
-
-            for i in death_messages:
-                if i in line and 'Villager class' not in line:
-                    server_link(line, server)
-                    return line
-    return
+def SMP():
+    return chat_link('SMP')
 
 
-# flatworld
-def chat_link_FMP():
-    tail = FileTail(console_out.format('flatworld'))
-    server = 'FMP'
-    for line in tail:
-        if '[Server thread/INFO]' in line:
-            if line[33] == '<' and '>' in line:
-                server_link(line, server)
-                return line
-            elif line[33] == '*':
-                server_link(line, server)
-                return line
-            elif 'joined the game' in line:
-                server_link(line, server)
-                return line
-            elif 'left the game' in line:
-                server_link(line, server)
-                return line
+def CMP():
+    return chat_link('CMP')
 
-            for i in death_messages:
-                if i in line and 'Villager class' not in line:
-                    server_link(line, server)
-                    return line
-    return
+
+def FMP():
+    return chat_link('FMP')
