@@ -438,40 +438,18 @@ async def give_ranks():
 
 
 # chat link async function ran in executor
-async def link_async_func_SMP():
+async def link_async_func(server):
     await bot.wait_until_ready()  # await until the bot is ready
     send_channel = bot.get_channel(CHAT_LINK_CHANNEL)  # specify the chat link discord channel
     with features.ThreadPoolExecutor() as pool:  # run a thread pool executor
         while True:  # while true -> always
-            line = await bot.loop.run_in_executor(pool, cl.SMP)  # run chat_link in executor
+            line = await bot.loop.run_in_executor(pool, cl.chat_link, server)  # run chat_link in executor
             if 'tellraw' not in line:
-                await send_channel.send('**[SMP]** ' + line[33:])
-
-
-# chat link async function ran in executor
-async def link_async_func_CMP():
-    await bot.wait_until_ready()  # await until the bot is ready
-    send_channel = bot.get_channel(CHAT_LINK_CHANNEL)  # specify the chat link discord channel
-    with features.ThreadPoolExecutor() as pool:  # run a thread pool executor
-        while True:  # while true -> always
-            line = await bot.loop.run_in_executor(pool, cl.CMP)  # run chat_link in executor
-            if 'tellraw' not in line:
-                await send_channel.send('**[CMP]** ' + line[33:])
-
-
-# chat link async function ran in executor
-async def link_async_func_FMP():
-    await bot.wait_until_ready()  # await until the bot is ready
-    send_channel = bot.get_channel(CHAT_LINK_CHANNEL)  # specify the chat link discord channel
-    with features.ThreadPoolExecutor() as pool:  # run a thread pool executor
-        while True:  # while true -> always
-            line = await bot.loop.run_in_executor(pool, cl.FMP())  # run chat_link in executor
-            if 'tellraw' not in line:
-                await send_channel.send('**[FMP]** ' + line[33:])
+                await send_channel.send('**[{}]** '.format(server) + line[33:])
 
 
 # give_ranks.start()
-bot.loop.create_task(link_async_func_SMP())  # run the loop for the chat link
-bot.loop.create_task(link_async_func_CMP())  # run the loop for the chat link
-bot.loop.create_task(link_async_func_FMP())  # run the loop for the chat link
+bot.loop.create_task(link_async_func('SMP'))  # run the loop for the chat link
+bot.loop.create_task(link_async_func('CMP'))  # run the loop for the chat link
+bot.loop.create_task(link_async_func('FMP'))  # run the loop for the chat link
 bot.run(token)  # run the loop for the bot

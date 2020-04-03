@@ -44,15 +44,3 @@ def chat_link(server):
                     server_link(line, server)
                     return line
     return
-
-
-def SMP():
-    return chat_link('SMP')
-
-
-def CMP():
-    return chat_link('CMP')
-
-
-def FMP():
-    return chat_link('FMP')
