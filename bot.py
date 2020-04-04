@@ -125,7 +125,6 @@ async def on_message(message):  # run when a message has been send
                 # use the tellraw command to send messages in chat
                 # begin the message by <dc.sender> to show who sent the message
                 # also remove #xxxx from the senders discord tag
-                # /tellraw @a [{\"text\":\"[Discord] \", \"color\":\"aqua\"}, {"text":"<Viktorvn40> something something", "color":"white"}]
                 a = 'tellraw @a [{\"text\":\"[Discord] \", \"color\":\"blue\"}, {\"text\":'
                 b = '\"<{}> {}\", \"color\":\"white\"'.format(str(sender)[:-5], str(msg)) + '}]\n'
                 f.writelines(a + b)
@@ -449,7 +448,7 @@ async def link_async_func(server):
 
 
 # give_ranks.start()
-bot.loop.create_task(link_async_func('SMP'))  # run the loop for the chat link
-bot.loop.create_task(link_async_func('CMP'))  # run the loop for the chat link
-bot.loop.create_task(link_async_func('FMP'))  # run the loop for the chat link
+bot.loop.create_task(link_async_func('SMP'))  # run the loop for the SMP link
+bot.loop.create_task(link_async_func('CMP'))  # run the loop for the CMP link
+bot.loop.create_task(link_async_func('FMP'))  # run the loop for the FMP link
 bot.run(token)  # run the loop for the bot

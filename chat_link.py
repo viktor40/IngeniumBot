@@ -11,7 +11,7 @@ def server_link(line, server):
           '{{\"text\":\"{}\", \"color\":\"white\"}}]\n'.format(server, line[33:-1])
     for s in server_mappings.keys():  # write to all servers that are not the server where the messages comes from
         if s != server:
-            with open(console_in.format(s), 'w') as f:
+            with open(console_in.format(server_mappings[s]), 'w') as f:
                 f.writelines(msg)
                 f.close()
 
