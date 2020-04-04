@@ -3,12 +3,13 @@ import os  # import module for directory management
 from dotenv import load_dotenv  # load module for usage of a .env file
 import subprocess  # import module used to do linux code execution
 from discord.ext import commands  # import the commands module from discord.py
-import concurrent.futures as features  # import concurrent.features for the executor for the chat link
+import concurrent.futures as futures  # import concurrent.features for the executor for the chat link
 
 # scripts made to be used together with the bot
 import scoreboard as sc  # import scoreboard.py
 import player_data as pd  # import the script to get player data
 import chat_link as cl
+import help
 
 # server data imported from server_data.py
 from server_data import CHAT_LINK_CHANNEL
@@ -18,16 +19,6 @@ from server_data import server_locations
 from server_data import ips
 from server_data import servers
 
-# help info for help command imported from help.py
-from help import scoreboard_help
-from help import playerscore_help
-from help import ip_help
-from help import server_location_help
-from help import status_help
-from help import players_help
-from help import mscs_help
-from help import shell_help
-from help import start_help
 
 bot = commands.Bot(command_prefix=('ig ', 'Ig '))  # set the command prefix
 
@@ -178,7 +169,7 @@ async def test_bot(ctx):
 
 # display a scoreboard of an objective with the first number amount of players
 # if number is not given, then all will be displayed
-@bot.command(name='scoreboard', help=scoreboard_help)
+@bot.command(name='scoreboard', help=help.scoreboard)
 async def scoreboard(ctx, objective, number=''):
     result = sc.display(objective, number)  # get result from the scoreboard display function
     if result != 'unknown':
@@ -189,7 +180,7 @@ async def scoreboard(ctx, objective, number=''):
 
 
 # command to fetch scoreboard data of a single player and a single scoreboard
-@bot.command(name='playerscore', help=playerscore_help)
+@bot.command(name='playerscore', help=help.playerscore)
 async def playerscore(ctx, objective, player):
     if player not in pd.players():
         await ctx.send('```css\n[I\'m sorry but this user has not been found.]```')
@@ -243,7 +234,7 @@ async def spawn_mob():
 
 
 # get th ip of a server
-@bot.command(name='ip', help=ip_help)
+@bot.command(name='ip', help=help.ip)
 @commands.has_any_role('Member', 'Trial Member')
 async def show_ip(ctx, server):
     if server not in servers:
@@ -254,7 +245,7 @@ async def show_ip(ctx, server):
 
 
 # use the server locations from server_data.py to display the coordinates of a certain location
-@bot.command(name='location', help=server_location_help)
+@bot.command(name='location', help=help.server_location)
 @commands.has_any_role('Member', 'Trial Member')
 async def location(ctx, *locations):
     place = ''
@@ -270,7 +261,7 @@ async def location(ctx, *locations):
 
 
 # write the server status to the channel
-@bot.command(name='status', help=status_help)
+@bot.command(name='status', help=help.status)
 @commands.has_any_role('Member', 'Trial Member')
 async def status(ctx, server):
     if server not in servers:
@@ -286,7 +277,7 @@ async def status(ctx, server):
 
 
 # show how many players are online and which players are online
-@bot.command(name='online', help=players_help)
+@bot.command(name='online', help=help.online)
 @commands.has_any_role('Member', 'Trial Member')
 async def online(ctx, server):
     if server not in servers:
@@ -370,7 +361,7 @@ async def get_dcname(ctx, mc_name):
         await ctx.send(f'```{mc} is {dc} in minecraft```')
 
 
-@bot.command(name='start', help=start_help)
+@bot.command(name='start', help=help.start)
 @commands.has_any_role('Member', 'Trial Member')
 async def start(ctx, server):
     if server not in servers:
@@ -398,7 +389,7 @@ async def command(ctx, *cmd):
         f.close()  # close the file
 
 
-@bot.command(name='mscs', help=mscs_help)
+@bot.command(name='mscs', help=help.mscs)
 @commands.has_any_role('Staff', 'Owner')
 async def mscs(ctx, *cmd):
     cmd = subprocess.run(['mscs'] + [i for i in cmd], stdout=subprocess.PIPE)  # execute mscs cmd in linux console
@@ -406,7 +397,7 @@ async def mscs(ctx, *cmd):
     await ctx.send(result)
 
 
-@bot.command(name='shell_command', help=shell_help)
+@bot.command(name='shell_command', help=help.shell)
 @commands.has_any_role('Staff', 'Owner')
 async def shell_command(ctx, *cmd):
     cmd = subprocess.run([i for i in cmd], stdout=subprocess.PIPE)  # execute command in linux console
@@ -435,7 +426,7 @@ async def give_ranks():
 async def link_async_func(server):
     await bot.wait_until_ready()  # await until the bot is ready
     send_channel = bot.get_channel(CHAT_LINK_CHANNEL)  # specify the chat link discord channel
-    with features.ThreadPoolExecutor() as pool:  # run a thread pool executor
+    with futures.ThreadPoolExecutor() as pool:  # run a thread pool executor
         while True:  # while true -> always
             line = await bot.loop.run_in_executor(pool, cl.chat_link, server)  # run chat_link in executor
             if 'tellraw' not in line:
