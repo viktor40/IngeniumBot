@@ -4,13 +4,9 @@ from dotenv import load_dotenv  # load module for usage of a .env file
 import subprocess  # import module used to do linux code execution
 from discord.ext import commands  # import the commands module from discord.py
 import concurrent.futures as features  # import concurrent.features for the executor for the chat link
-from discord.ext import tasks  # import  command module from discord.py
-import discord  # import discord.py module
-import asyncio
 
 # scripts made to be used together with the bot
 import scoreboard as sc  # import scoreboard.py
-from filetail import FileTail  # import the script to tail files like in linux
 import player_data as pd  # import the script to get player data
 import chat_link as cl
 
@@ -21,7 +17,6 @@ from server_data import seed
 from server_data import server_locations
 from server_data import ips
 from server_data import servers
-from server_data import death_messages
 
 # help info for help command imported from help.py
 from help import scoreboard_help
