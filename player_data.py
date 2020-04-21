@@ -23,6 +23,7 @@ def generate(save=False):
     return player_info
 
 
+# not used in bot
 # access the mojang api to convert missing uuid's to player names
 def make_playername(UUID_file, save=False):
     link = 'https://sessionserver.mojang.com/session/minecraft/profile/{}'

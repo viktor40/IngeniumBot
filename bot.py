@@ -9,24 +9,14 @@ import concurrent.futures as futures  # import concurrent.features for the execu
 import scoreboard as sc  # import scoreboard.py
 import player_data as pd  # import the script to get player data
 import chat_link as cl
+import server_data as sd
 import help
-
-# server data imported from server_data.py
-from server_data import CHAT_LINK_CHANNEL
-from server_data import console_in
-from server_data import seed
-from server_data import server_locations
-from server_data import ips
-from server_data import servers
 
 
 bot = commands.Bot(command_prefix=('ig ', 'Ig '))  # set the command prefix
 
 load_dotenv()  # load the .env file containing id's that have to be kept secret for security
 token = os.getenv('DISCORD_TOKEN')  # get our discord bot token from .env
-
-# if true, bot won't  speak to itself
-DEFENSE_MESSAGE = True
 
 ugly = ['JeSuisLelijk', 'jesuislelijk']
 
@@ -39,7 +29,6 @@ async def on_ready():
 # check messages when they're send and answer if something triggers the bot
 @bot.event
 async def on_message(message):  # run when a message has been send
-    global DEFENSE_MESSAGE  # create a global variable
     # makes sure we don't fire on ourselves
     if message.author.name == 'Ingenium':
         return
@@ -102,34 +91,22 @@ async def on_message(message):  # run when a message has been send
         await message.channel.send(response, delete_after=35)
 
     # chat link code
-    if message.channel.id == CHAT_LINK_CHANNEL:  # only send messages sent in the chat link channel
+    if message.channel.id == sd.CHAT_LINK_CHANNEL:  # only send messages sent in the chat link channel
         # get both the content of the message as well as it's author
         msg = message.content
         sender = message.author
         if not msg.startswith('ig ') and not msg.startswith('Ig '):  # ignore bot commands
-            with open(console_in.format('survival'), 'w') as f:  # open console file to write the command
-                # use the tellraw command to send messages in chat
-                # begin the message by <dc.sender> to show who sent the message
-                # also remove #xxxx from the senders discord tag
-                a = 'tellraw @a [{\"text\":\"[Discord] \", \"color\":\"blue\"}, {\"text\":'
-                b = '\"<{}> {}\", \"color\":\"white\"'.format(str(sender)[:-5], str(msg)) + '}]\n'
-                f.writelines(a + b)
-                f.close()
-                await bot.process_commands(message)
-
-            with open(console_in.format('creative'), 'w') as f:
-                a = 'tellraw @a [{\"text\":\"[Discord] \", \"color\":\"blue\"}, {\"text\":'
-                b = '\"<{}> {}\", \"color\":\"white\"'.format(str(sender)[:-5], str(msg)) + '}]\n'
-                f.writelines(a + b)
-                f.close()
-                await bot.process_commands(message)
-
-            with open(console_in.format('flatworld'), 'w') as f:
-                a = 'tellraw @a [{\"text\":\"[Discord] \", \"color\":\"blue\"}, {\"text\":'
-                b = '\"<{}> {}\", \"color\":\"white\"'.format(str(sender)[:-5], str(msg)) + '}]\n'
-                f.writelines(a + b)
-                f.close()
-                await bot.process_commands(message)
+            # use the tellraw command to send messages in in game chat & add some colour formatting
+            # begin the message with [discord] to show it's a discord message sent the message
+            # remove #xxxx from the senders discord tag and put the name in < >
+            dc_msg_in_game = 'tellraw @a [{{\"text\":\"[Discord] \", \"color\":\"blue\"}}, {{\"text\":\"<{}> {}\",' \
+                    ' \"color\":\"white\"}}]\n'.format(str(sender)[:-5], str(msg))
+            # go through all servers and send the message
+            for world in sd.servers:
+                with open(sd.console_in.format(world), 'w') as f:  # open console file to write the command
+                    f.writelines(dc_msg_in_game)
+                    f.close()
+                    await bot.process_commands(message)
 
     await bot.process_commands(message)
 
@@ -137,25 +114,17 @@ async def on_message(message):  # run when a message has been send
 # when a new player joins, write the welcome message
 @bot.event
 async def on_member_join(member):
-    # define the channel id's for the different channels it wants to mention
-    welcome = bot.get_channel(611184121024086016)
-    how_to_apply = bot.get_channel(677626692335960064)
-    self_roles = bot.get_channel(611188046339244032)
-    server_rules_and_info = bot.get_channel(611184197041651718)
-    general_chat = bot.get_channel(611184705693417472)
-    introduce_yourself = bot.get_channel(635534011325743111)
-
     # mention with .mention, \n will add a newline in the f string
-    response = (f'Hi {member.mention}, welcome to the Ingenium Discord server!. \n'
-                f'You can find our rules as well as other information about the server in {server_rules_and_info.mention}. \n'
-                f'If you want to apply, head over to {how_to_apply.mention} and follow the instructions. \n'
-                f'Let us know where you are from in in {self_roles.mention}. \n'
-                f'Feel free to introduce yourself in {introduce_yourself.mention}. \n'
-                f'You can start talking to us in {general_chat.mention}.\n'
+    response = (f'Hi {member}, welcome to the Ingenium Discord server!. \n'
+                f'You can find our rules as well as other information about the server in {bot.get_channel(sd.server_rules_and_info).mention}. \n'
+                f'If you want to apply, head over to {bot.get_channel(sd.how_to_apply).mention} and follow the instructions. \n'
+                f'Let us know where you are from in in {bot.get_channel(sd.server_rules_and_info).mention}. \n'
+                f'Feel free to introduce yourself in {bot.get_channel(sd.introduce_yourself).mention}. \n'
+                f'You can start talking to us in {bot.get_channel(sd.general_chat).mention}.\n'
                 f'\n'
                 f'If you have any questions feel free to ask our staff about it! \n'
                 f'We hope you will have a pleasant time on the server!')
-    await welcome.send(response)
+    await bot.get_channel(sd.welcome).send(response)
 
 
 # commands everyone can uses
@@ -196,7 +165,7 @@ async def playerscore(ctx, objective, player):
 # display the world seed
 @bot.command(name='seed', help='Display the server\'s seed')
 async def show_seed(ctx):
-    result = seed
+    result = sd.seed
     await ctx.send(f'`{result}`')
 
 
@@ -224,23 +193,14 @@ async def whitelist(ctx):
     await ctx.send(result)
 
 
-# commands only Members and Trial Member can use
-@bot.command(name='mob_bot', help='spawn the mob bot')
-@commands.has_any_role('Member', 'Trial Member')
-async def spawn_mob():
-    with open(console_in, 'w') as f:
-        f.writelines('player bot spawn at 256.70 106.00 -187.53')
-        f.close()
-
-
 # get th ip of a server
 @bot.command(name='ip', help=help.ip)
 @commands.has_any_role('Member', 'Trial Member')
 async def show_ip(ctx, server):
-    if server not in servers:
+    if server not in sd.servers:
         await ctx.send('```css\n[This is not a valid server. Check the valid servers in ip help]\n```')
     else:
-        result = ips[server]
+        result = sd.ips[server]
         await ctx.send(f'`{result}`')
 
 
@@ -253,10 +213,10 @@ async def location(ctx, *locations):
         place += l + ' '
     place = place[:-1]
     place = place.replace('_', ' ')
-    if place not in server_locations:
+    if place not in sd.server_locations:
         await ctx.send('```css\n[This is not a valid location. See help locations for more information]\n```')
     else:
-        result = server_locations[place.lower()]
+        result = sd.server_locations[place.lower()]
         await ctx.send(f'`{place.lower()} nether roof coordinates: {result}`')
 
 
@@ -264,7 +224,7 @@ async def location(ctx, *locations):
 @bot.command(name='status', help=help.status)
 @commands.has_any_role('Member', 'Trial Member')
 async def status(ctx, server):
-    if server not in servers:
+    if server not in sd.servers:
         await ctx.send('```css\n[This is not a valid server. Check the valid servers in ip help]\n```')
     else:
         cmd_out = subprocess.run(['mscs', 'status'], stdout=subprocess.PIPE)  # execute mscs status in linux console
@@ -280,7 +240,7 @@ async def status(ctx, server):
 @bot.command(name='online', help=help.online)
 @commands.has_any_role('Member', 'Trial Member')
 async def online(ctx, server):
-    if server not in servers:
+    if server not in sd.servers:
         await ctx.send('```css\n[This is not a valid server. Check the valid servers in ip help]\n```')
     else:
         cmd_out = subprocess.run(['mscs', 'status'], stdout=subprocess.PIPE)  # execute mscs status in linux console
@@ -364,7 +324,7 @@ async def get_dcname(ctx, mc_name):
 @bot.command(name='start', help=help.start)
 @commands.has_any_role('Member', 'Trial Member')
 async def start(ctx, server):
-    if server not in servers:
+    if server not in sd.servers:
         await ctx.send('```css\n[This is not a valid server. Check the valid servers in help start]\n```')
     else:
         cmd = subprocess.run(['mscs'] + ['start'] + [server], stdout=subprocess.PIPE)  # start the server
@@ -379,12 +339,14 @@ async def start(ctx, server):
 # *cmd: the * will make it so that all variables typed in will be stored in the command variable
 # if one were to only use cmd as an argument only the first word after the command name would be in the variable
 # ig command some mc command -> would be stored in cmd as -> cmd = (some, mc, command)
-async def command(ctx, *cmd):
+async def command(ctx, server, *cmd):
+    if server not in sd.servers:
+        await ctx.send('```css\n[This is not a valid server]\n```')
     send_command = ''  # initialize an empty string to add the extra variables in the tuple to
     for i in cmd:  # go over the tuple containing
         send_command += '{} '.format(i)  # add nth value in tuple and a space after id
     send_command = send_command[:-1]  # remove the last space from the cmd
-    with open(console_in, 'w') as f:  # open the console.in file to write the commands
+    with open(sd.console_in.format(server), 'w') as f:  # open the console.in file to write the commands
         f.writelines('/{}\n'.format(send_command))  # write the command in the console.in file
         f.close()  # close the file
 
@@ -405,27 +367,10 @@ async def shell_command(ctx, *cmd):
     await ctx.send(result)
 
 
-"""
-@tasks.loop(minutes=1)
-async def give_ranks():
-    await bot.wait_until_ready()  # await until the bot is ready
-    TEST_CHANNEL = 611188555447926784
-    send_channel = bot.get_channel(TEST_CHANNEL)  # specify the chat link discord channel
-    test = 'test'
-    print('test1')
-    with features.ThreadPoolExecutor() as pool:  # run a thread pool executor
-        print('test2')
-        while True:  # while true -> always
-            print('test3')
-            line = await bot.loop.run_in_executor(pool, auto_rank())  # run chat_link in executor
-    await send_channel.send(test)  # send the output to chat without timestamp and console msg type
-"""
-
-
 # chat link async function ran in executor
 async def link_async_func(server):
     await bot.wait_until_ready()  # await until the bot is ready
-    send_channel = bot.get_channel(CHAT_LINK_CHANNEL)  # specify the chat link discord channel
+    send_channel = bot.get_channel(sd.CHAT_LINK_CHANNEL)  # specify the chat link discord channel
     with futures.ThreadPoolExecutor() as pool:  # run a thread pool executor
         while True:  # while true -> always
             line = await bot.loop.run_in_executor(pool, cl.chat_link, server)  # run chat_link in executor

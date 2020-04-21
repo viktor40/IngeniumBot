@@ -1,5 +1,13 @@
 CHAT_LINK_CHANNEL = 688125129456484366
 
+# define the channel id's for the different channels it wants to mention
+welcome = 611184121024086016
+how_to_apply = 677626692335960064
+self_roles = 611188046339244032
+server_rules_and_info = 611184197041651718
+general_chat = 611184705693417472
+introduce_yourself = 635534011325743111
+
 seed = '-8558479263656096884'
 
 ips = {'survival': '158.69.122.191',
@@ -31,7 +39,8 @@ server_locations = {'spawn': '1, 1',
                     'diamond mining north end portal': '470, -1673',
                     'diamond mining south end portal': '250, -1330',
                     'wither killer': '51, 26',
-                    'gravel farm': '-1201, 1809'}
+                    'gravel farm': '-1201, 1809',
+                    'project chicken': '-836, 16'}
 
 whitelist = '../mscs/worlds/survival/whitelist.json'
 
@@ -54,7 +63,6 @@ JSON_objectives = {'play_minutes': ('minecraft:play_one_minute', 'minecraft:cust
                    'distance_flown_km': ('minecraft:fly_one_cm', 'minecraft:custom'),
                    'distance_walked_km': ('minecraft:fly_one_cm', 'minecraft:custom'),
 
-                   'pick_uses': ('minecraft:diamond_pickaxe', 'minecraft:used'),
                    'hoe_uses': ('minecraft:diamond_hoe', 'minecraft:used'),
                    'axe_uses': ('minecraft:diamond_axe', 'minecraft:used'),
                    'shovel_uses': ('minecraft:diamond_shovel', 'minecraft:used'),
@@ -78,7 +86,9 @@ JSON_objectives = {'play_minutes': ('minecraft:play_one_minute', 'minecraft:cust
 
 # map the commands to the NBT file scoreboard.dat containing the custom scoreboards
 NBT_objectives = {'slime_peri': 'BlocksMinedPeri',
-                  'witch_peri': 'PeriBlocksMined'}
+                  'witch_peri': 'PeriBlocksMined',
+                  'project_chicken': 'ProjectChicken',
+                  'pick_uses': 'DiamondPickUses'}
 
 objectives_m = ['distance_flown_m', 'distance_walked_m']
 objectives_km = ['distance_flown_km', 'distance_walked_km']

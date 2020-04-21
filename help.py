@@ -22,7 +22,7 @@ scoreboard = f'Print the scoreboard you want to get to the chat.\n' \
              f'quartz_mined, diamonds_mined, obsidian_mined\n' \
              f'\n' \
              f'-----custom-----\n' \
-             f'slime_peri, witch_peri'
+             f'slime_peri, witch_peri, project_chicken'
 
 playerscore = f'Print the score in a scoreboard of a certain player.\n' \
               f'The first word after the command is the name of the scoreboard.\n' \
@@ -45,14 +45,13 @@ playerscore = f'Print the score in a scoreboard of a certain player.\n' \
               f'quartz_mined, diamonds_mined, obsidian_mined\n' \
               f'\n' \
               f'-----custom-----\n' \
-              f'slime_peri, witch_peri'
+              f'slime_peri, witch_peri, project_chicken'
 
 ip = f'Get the ip of the server. \n' \
      f'The different possibilities are:\n' \
      f'survival -> get the SMP ip.\n' \
      f'creative -> get the creative copy ip.\n' \
      f'flatworld -> get the flatworld testingserver ip.\n' \
-     f'flatworld2 -> get the alternate flatworld ip (the sandstone flatworld).\n' \
      f'test -> get the ip of the server where we test things like updates etc.'
 
 server_location = f'Get the coordinates of important locations.\n' \
@@ -72,7 +71,9 @@ server_location = f'Get the coordinates of important locations.\n' \
                   f'\n' \
                   f'-----Diamond mine locations-----\n' \
                   f'diamond mining north entrance, diamond mining south entrance, diamond mining north end portal, ' \
-                  f'diamond mining south end portal'
+                  f'diamond mining south end portal\n' \
+                  f'-----Other locations-----\n' \
+                  f'project chicken' \
 
 status = f'Check the server status.\n' \
          f'The command will output the server status, the server version and the number of players online.\n' \

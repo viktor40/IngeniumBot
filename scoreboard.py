@@ -37,6 +37,7 @@ def get_json_stat(sub_type, objective, sc, id):
     with open(f'{stat_directory}/{id}.json') as f:
         # load the JSON file
         data = json.load(f)
+        f.close()
     # get to the right branch in the JSON tree
     data = data.get('stats').get(sub_type)[objective]
 
@@ -51,7 +52,6 @@ def get_json_stat(sub_type, objective, sc, id):
         data = math.floor((int(data) / (20 * 60)))
     elif sc == 'time_since_death_hours':
         data = math.floor(int(data) / (20 * 3600))
-    f.close()
     return data
 
 
