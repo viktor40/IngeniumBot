@@ -1,3 +1,4 @@
+# chat link channel
 CHAT_LINK_CHANNEL = 688125129456484366
 
 # define the channel id's for the different channels it wants to mention
@@ -90,6 +91,7 @@ NBT_objectives = {'slime_peri': 'BlocksMinedPeri',
                   'project_chicken': 'ProjectChicken',
                   'pick_uses': 'DiamondPickUses'}
 
+# objectives that need value conversions for the scoreboard
 objectives_m = ['distance_flown_m', 'distance_walked_m']
 objectives_km = ['distance_flown_km', 'distance_walked_km']
 

@@ -3,15 +3,14 @@ import os  # import module for directory management
 from dotenv import load_dotenv  # load module for usage of a .env file
 import subprocess  # import module used to do linux code execution
 from discord.ext import commands  # import the commands module from discord.py
-import concurrent.futures as futures  # import concurrent.features for the executor for the chat link
+import concurrent.futures as futures  # import concurrent.futures for the executor of the chat link
 
-# scripts made to be used together with the bot
+# scripts and data files made to be used together with the bot
 import scoreboard as sc  # import scoreboard.py
 import player_data as pd  # import the script to get player data
 import chat_link as cl
 import server_data as sd
 import help
-
 
 bot = commands.Bot(command_prefix=('ig ', 'Ig '))  # set the command prefix
 
