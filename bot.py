@@ -14,10 +14,9 @@ import help
 
 bot = commands.Bot(command_prefix=('ig ', 'Ig '))  # set the command prefix
 
+# discord token is stored in a .env file in the same directory as the bot
 load_dotenv()  # load the .env file containing id's that have to be kept secret for security
 token = os.getenv('DISCORD_TOKEN')  # get our discord bot token from .env
-
-ugly = ['JeSuisLelijk', 'jesuislelijk']
 
 
 @bot.event
@@ -31,18 +30,6 @@ async def on_message(message):  # run when a message has been send
     # makes sure we don't fire on ourselves
     if message.author.name == 'Ingenium':
         return
-
-    # if the message contains jesuislelijk with or without caps respond the response
-    for item in ('JeSuisLelijk', 'jesuislelijk'):
-        if item in message.content:
-            """await will wait and trigger when only if the if statement is true"""
-            # delete the message after 100 sec
-            await message.channel.send('I love Nanor and Toot', delete_after=20)
-
-    for item in ('Stormloop', 'stormloop'):
-        if item in message.content:
-            """await will wait and trigger when only if the if statement is true"""
-            await message.channel.send('The biggest pimp ever', delete_after=20)  # delete the message after 60 sec
 
     # if the message contains 69 answer nice
     if '69' in message.content:
@@ -61,21 +48,6 @@ async def on_message(message):  # run when a message has been send
         else:
             response = 'Haha Weeeeeeed!'
             await message.channel.send(response, delete_after=20)
-
-    # pay respect when someone types F or f
-    if message.content in ('F', 'f'):
-        response = 'The Ingenium server pays their respect'
-        await message.channel.send(response)
-
-    # respond to oof
-    if message.content in ('Oof', 'oof'):
-        response = 'Oof you done goofed!'
-        await message.channel.send(response, delete_after=10)
-
-    # respond to happy birthday
-    if 'happy birthday' in message.content or 'Happy Birthday' in message.content:
-        response = 'Ingenium wishes you a happy birthday! ðŸŽˆðŸŽ‰'
-        await message.channel.send(response)
 
     if 'ilmango' in message.content:
         response = 'Mango, Mango, Mango mango mango, Mangooooooooooooooooooooooooooooooooooooooooooo'
