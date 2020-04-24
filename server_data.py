@@ -11,11 +11,11 @@ introduce_yourself = 635534011325743111
 
 seed = '-8558479263656096884'
 
-ips = {'survival': '158.69.122.191',
-       'creative': '158.69.122.191:25568',
-       'flatworld': '158.69.122.191:25567',
-       'flatworld2': '109.247.2.239',
-       'test': '158.69.122.191:25575'}
+ips = {'survival': '',
+       'creative': '',
+       'flatworld': '',
+       'flatworld2': '',
+       'test': ''}
 
 server_locations = {'spawn': '1, 1',
                     'end portal': '273, -21',
